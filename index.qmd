@@ -5,6 +5,9 @@ This is a Quarto book.
 To learn more about Quarto books visit <https://quarto.org/docs/books>.
 
 ```{r}
-1 + 1
+#| echo: false
+#| warning: false
+#| message: false
+# 1 + 1
 
 ```

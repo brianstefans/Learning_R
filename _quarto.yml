@@ -2,14 +2,16 @@ project:
   type: book
 
 book:
-  title: "Learning_R"
-  author: "Norah Jones"
-  date: "22/11/2025"
+  title: "Applied Data Analysis and Machine Learning in R" #"Learning_R"
+  #author: "Brian S Ssali"
+  #date: "22/11/2025"
   chapters:
     - index.qmd
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
+    #- intro.qmd
+    - module1.qmd
+    - module2.qmd
+    #- summary.qmd
+    #- references.qmd
 
 bibliography: references.bib
 
@@ -22,4 +24,7 @@ format:
   #  documentclass: scrreprt
 
 editor: visual
+
+execute:
+   freeze: auto
 

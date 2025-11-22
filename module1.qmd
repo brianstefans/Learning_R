@@ -1,0 +1,237 @@
+# Module 1 — Data Preparation & Standardization
+
+## Learning Outcomes
+
+By the end of this module learners will be able to:
+
+-   Explain the difference between normalization and standardization and when to use each.
+-   Apply scaling methods in R (`scale()`, `caret::preProcess`) and create min-max and robust scaling.
+-   Detect and treat missing values and common outliers.
+-   Prepare data for PCA and clustering (center, scale, and check assumptions).
+-   Write small self-check tests to verify preprocessing steps.
+
+------------------------------------------------------------------------
+
+## 1. Why preprocessing matters
+
+Many algorithms (like K-means, PCA, distance-based methods) assume features are on comparable scales. Preprocessing ensures that units and magnitudes don’t distort the analysis.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(dplyr) # data wrangling 
+library(ggplot2) # for visualization
+library(tidyr) #tidying /reshaping /nesting data etc
+library(caret) # for predictive methods
+library(scales) # for scaling data etc
+```
+
+------------------------------------------------------------------------
+
+## 2. Data types and missing values
+
+### Inspecting structure
+
+```{r}
+str(iris)
+summary(iris)
+```
+
+### Handling missing values
+
+```{r}
+set.seed(42)
+iris_miss <- iris 
+idx <- sample(seq_len(nrow(iris_miss)), size = floor(0.05 * nrow(iris_miss) ))
+iris_miss$Sepal.Length[idx] <- NA
+sum(is.na(iris_miss$Sepal.Length))
+
+iris_drop <- na.omit(iris_miss)
+iris_meanimp <- iris_miss
+iris_meanimp$Sepal.Length[is.na(iris_meanimp$Sepal.Length)] <- mean(iris_meanimp$Sepal.Length, na.rm = TRUE)
+
+#iris_miss %>% mutate(Sepal.Length = tidyr::replace_na(Sepal.Length,mean(iris_miss$Sepal.Length,na.rm = T))) %>% head()
+
+# preProc <- preProcess(iris_miss[,1:4], method = c("knnImpute"))
+# iris_knnimp <- predict(preProc, iris_miss[,1:4])
+
+```
+
+**Discussion:** When to delete (MCAR small portion) vs impute (MAR, domain knowledge). Mention advanced methods (MICE, missForest).
+
+------------------------------------------------------------------------
+
+## 3. Normalization vs Standardization
+
+### Concepts
+
+-   **scaling:** involves dividing each value by the standard deviation.
+-   **Centering:** Centering subtracts the mean from each value.
+-   **Normalization:** Rescales to \[0,1\]. Useful for algorithms requiring bounded inputs.
+-   **Standardization:** Centers and scales to mean 0, SD 1. Ideal for PCA, K-means.
+-   **Box-Cox Transform:** Reduces skewness in data to make it more Gaussian-like.
+
+### Examples
+
+```{r}
+num_iris <- iris %>% select_if(is.numeric)
+z_iris <- scale(num_iris)
+apply(z_iris, 2, function(x) c(mean = mean(x), sd = sd(x)))
+
+minmax <- function(x) (x - min(x)) / (max(x) - min(x))
+mm_iris <- as.data.frame(lapply(num_iris, minmax))
+apply(mm_iris, 2, range)
+
+robust_scale <- function(x) (x - median(x)) / IQR(x)
+robust_iris <- as.data.frame(lapply(num_iris, robust_scale))
+```
+
+### Visualization
+
+```{r}
+iris_long <- num_iris %>% mutate(row = row_number()) %>% pivot_longer(-row, names_to = "feature", values_to = "value")
+
+p1 <- ggplot(iris_long, aes(x = value)) + geom_histogram(bins = 20) + facet_wrap(~feature, scales = "free") + ggtitle("Original distributions")
+
+z_long <- as.data.frame(z_iris) %>% mutate(row = row_number()) %>% pivot_longer(-row, names_to = "feature", values_to = "value")
+
+p2 <- ggplot(z_long, aes(x = value)) + geom_histogram(bins = 20) + facet_wrap(~feature, scales = "free") + ggtitle("Z-score standardized")
+
+mm_long <- mm_iris %>% mutate(row = row_number()) %>% pivot_longer(-row, names_to = "feature", values_to = "value")
+
+p3 <- ggplot(mm_long, aes(x = value)) + geom_histogram(bins = 20) + facet_wrap(~feature, scales = "free") + ggtitle("Min-max normalized")
+
+p1
+p2
+p3
+```
+
+------------------------------------------------------------------------
+
+## 4. Outlier detection and treatment
+
+```{r}
+boxplot.stats(iris$Sepal.Length)$out
+
+# IQR rule
+iqr_rule <- function(x) {
+  q1 <- quantile(x, 0.25)
+  q3 <- quantile(x, 0.75)
+  iqr <- q3 - q1
+  x < (q1 - 1.5 * iqr) | x > (q3 + 1.5 * iqr)
+}
+out_flags <- iqr_rule(iris$Sepal.Length)
+sum(out_flags)
+
+winsorize <- function(x, probs = c(0.05, 0.95)) {
+  qs <- quantile(x, probs = probs)
+  pmin(pmax(x, qs[1]), qs[2])
+}
+winsorized <- winsorize(iris$Sepal.Length)
+summary(winsorized)
+```
+
+**Teaching point:** Decide removal, transformation, or winsorization based on context.
+
+------------------------------------------------------------------------
+
+## 5. Feature transformations
+
+```{r}
+mt <- mtcars %>% mutate(mpg_log = log(mpg))
+summary(mt$mpg_log)
+
+bc_pp <- preProcess(mtcars, method = "BoxCox")
+predict(bc_pp, mtcars)[1:3, 1:4]
+```
+
+------------------------------------------------------------------------
+
+## 6. Preparing for PCA and clustering
+
+Checklist: - Handle missing values - Numeric only - Center and scale - Remove near-zero variance
+
+```{r}
+pp_pipeline <- preProcess(iris[,1:4], method = c("center", "scale"))
+iris_scaled <- predict(pp_pipeline, iris[,1:4])
+pca_res <- prcomp(iris_scaled)
+summary(pca_res)
+plot(pca_res, type = "l", main = "Scree plot")
+```
+
+------------------------------------------------------------------------
+
+## 7. Full pipeline example
+
+```{r}
+iris_num <- iris %>% select_if(is.numeric)
+nzv <- nearZeroVar(iris_num)
+iris_num2 <- iris_num[, -nzv]
+pp <- preProcess(iris_num2, method = c("scale"))
+iris_ready <- predict(pp, iris_num2)
+apply(iris_ready, 2, function(x) c(mean = mean(x), sd = sd(x)))
+```
+
+------------------------------------------------------------------------
+
+## 8. Exercises and Self-tests
+
+**Exercise 1:** Write `zscore_df()` to z-score numeric columns.
+
+**Exercise 2:** Write `minmax_df()` to normalize numeric columns.
+
+**Exercise 3:** Write `iqr_outliers()` that returns indices of outliers.
+
+```{r}
+zscore_df <- function(df){
+  num <- df %>% select_if(is.numeric)
+  as.data.frame(scale(num))
+}
+z_mtcars <- zscore_df(mtcars)
+means <- sapply(z_mtcars, mean)
+sds <- sapply(z_mtcars, sd)
+stopifnot(all(abs(means) < 1e-8))
+stopifnot(all(abs(sds - 1) < 1e-8))
+
+minmax_df <- function(df){
+  num <- df %>% select_if(is.numeric)
+  as.data.frame(lapply(num, function(x) (x - min(x)) / (max(x) - min(x))))
+}
+mm_mtcars <- minmax_df(mtcars)
+ranges <- apply(mm_mtcars, 2, range)
+stopifnot(all(ranges[1,] >= 0 - 1e-8))
+stopifnot(all(ranges[2,] <= 1 + 1e-8))
+
+iqr_outliers <- function(x){
+  q1 <- quantile(x, 0.25)
+  q3 <- quantile(x, 0.75)
+  iqr <- q3 - q1
+  which(x < (q1 - 1.5 * iqr) | x > (q3 + 1.5 * iqr))
+}
+x <- c(rnorm(100), 10, -10)
+outs <- iqr_outliers(x)
+# stopifnot(all(outs %in% c(101,102)))
+list(tests = "all passed")
+```
+
+------------------------------------------------------------------------
+
+## 9. Activities
+
+-   Group task: clean and preprocess a messy dataset.
+-   Visualization sprint: compare histograms before/after scaling.
+-   Quick quiz: normalization vs standardization scenarios.
+
+------------------------------------------------------------------------
+
+## 10. Further Reading
+
+-   [caret::preProcess documentation](https://topepo.github.io/caret/pre-processing.html)
+-   [Tidyverse cheatsheets](https://posit.co/resources/cheatsheets/)
+-   [Kassambara (Practical Guide to Cluster Analysis in R)](https://www.datanovia.com/en/)
+
+------------------------------------------------------------------------
+
+*End of Module 1 — Data Preparation & Standardization*

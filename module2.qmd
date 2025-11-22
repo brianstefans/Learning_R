@@ -1,0 +1,206 @@
+# Module 2 — Decision Tree Analysis & Partial Dependence
+
+## Learning Outcomes
+
+By the end of this module learners will be able to:
+  
+  - Explain how decision trees split data (Gini, entropy) and the difference between classification and regression trees.
+- Fit, visualize, prune, and evaluate decision tree models in R (`rpart`, `rpart.plot`).
+- Use cross-validation and `caret` for tuning and model selection.
+- Interpret model predictions using feature importance and Partial Dependence Plots (PDPs) with `pdp`, `iml`, and `DALEX`.
+- Write tests that validate model behavior on simple datasets.
+
+---
+  
+## 1. Setup & packages
+  
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(rpart)
+library(rpart.plot)
+library(pdp)
+library(DALEX)
+library(randomForest)
+library(pROC)
+set.seed(42)
+```
+
+---
+  
+## 2. Decision tree basics (intuition)
+  
+  Short summary: trees recursively split the feature space to create homogeneous groups. Splits are chosen to maximize reduction in impurity (Gini or entropy for classification; MSE for regression).
+
+---
+  
+## 3. Building a classification tree (code-along)
+
+```{r}
+# Use the iris dataset and create a reproducible train/test split
+data(iris)
+train_idx <- createDataPartition(iris$Species, p = 0.75, list = FALSE)
+train <- iris[train_idx, ]
+test  <- iris[-train_idx, ]
+
+# Fit a simple rpart tree
+fit_rpart <- rpart(Species ~ ., data = train, method = "class", control = rpart.control(cp = 0.01))
+
+# Visualize the tree
+rpart.plot(fit_rpart, type = 3, extra = 104, fallen.leaves = TRUE)
+
+# Predict and evaluate
+pred_class <- predict(fit_rpart, test, type = "class")
+cm <- confusionMatrix(pred_class, test$Species)
+cm
+```
+
+**Teaching notes:** explain `cp` (complexity parameter), `minsplit`, `maxdepth`, and how pruning works. Use `printcp(fit_rpart)` and `plotcp(fit_rpart)` to choose cp.
+
+```{r}
+printcp(fit_rpart)
+plotcp(fit_rpart)
+# prune to the cp with lowest xerror or the 1-SE rule
+opt_cp <- fit_rpart$cptable[which.min(fit_rpart$cptable[,"xerror"]), "CP"]
+fit_pruned <- prune(fit_rpart, cp = opt_cp)
+rpart.plot(fit_pruned, type = 3, extra = 104)
+```
+
+---
+
+## 4. Cross-validation and tuning with caret
+  
+```{r}
+ctrl <- trainControl(method = "cv", number = 5, classProbs = TRUE, summaryFunction = multiClassSummary)
+set.seed(42)
+tune_grid <- expand.grid(cp = seq(0.001, 0.05, by = 0.005))
+caret_rpart <- train(Species ~ ., data = train, method = "rpart", trControl = ctrl, tuneGrid = tune_grid)
+caret_rpart
+plot(caret_rpart)
+
+# evaluate on test
+pred_caret <- predict(caret_rpart, test)
+confusionMatrix(pred_caret, test$Species)
+```
+
+**Notes:** `caret::train` automates CV and tuning. Explain multiClassSummary (accuracy, Kappa, etc.).
+
+---
+  
+## 5. Feature importance & interpretation
+  
+```{r}
+# Variable importance from rpart:
+varImp(fit_rpart)
+# For caret model:
+varImp(caret_rpart)
+```
+
+Discuss how importance is computed (split improvement) and limitations.
+
+---
+  
+## 6. Partial Dependence Plots (PDPs)
+  
+**Goal:** show marginal effect of a feature on predicted probability (or prediction) while averaging out other features.
+
+### 6.1 PDP with `pdp`
+
+```{r}
+# Use the caret-trained model (wrap predict function if necessary)
+# pdp works with models that have a predict method returning probabilities. We'll use the randomForest wrapper as an example.
+rf <- randomForest(Species ~ ., data = train)
+
+# Partial dependence for Petal.Length vs class setosa (probability)
+pdp_pl <- partial(rf, pred.var = "Petal.Length", plot = TRUE, prob = TRUE, which.class = "setosa")
+print(pdp_pl)
+```
+
+### 6.2 PDP with `DALEX`
+
+```{r}
+# Create an explainer
+explainer_rf <- explain(rf, data = train[,1:4], y = train$Species, label = "rf_iris")
+# Profile (partial dependence) using DALEX
+p <- model_profile(explainer_rf, variables = "Petal.Length", N = 50)
+plot(p)
+```
+
+**Teaching caveats:** PDPs show average marginal effects and can be misleading with strong feature interactions. Use two-way PDPs or ICE plots for heterogeneity.
+
+---
+  
+## 7. Individual Conditional Expectation (ICE) and 2D PDPs
+  
+```{r}
+# ICE using pdp
+ice_pl <- partial(rf, pred.var = "Petal.Length", ice = TRUE, plot = TRUE, which.class = "setosa")
+
+# 2D PDP for Petal.Length and Petal.Width
+pdp_2d <- partial(rf, pred.var = c("Petal.Length", "Petal.Width"), chull = TRUE)
+plotPartial(pdp_2d)
+```
+
+---
+  
+## 8. Model comparison: Decision Tree vs Random Forest
+  
+```{r}
+# Fit Random Forest and compare
+rf_fit <- randomForest(Species ~ ., data = train)
+pred_rf <- predict(rf_fit, test)
+cm_rf <- confusionMatrix(pred_rf, test$Species)
+cm_tab <- rbind(tree = cm$overall[names(cm$overall) == "Accuracy"], rf = cm_rf$overall[names(cm_rf$overall) == "Accuracy"])
+cm_tab
+```
+
+Discuss trade-offs: interpretability (tree) vs performance (RF), stability, and overfitting.
+
+---
+  
+## 9. Automated tests for classroom (sanity checks)
+  
+```{r}
+# 1) Ensure tree predictions have reasonable accuracy (> 0.7 on iris test)
+acc_tree <- cm$overall["Accuracy"]
+stopifnot(acc_tree >= 0.7)
+
+# 2) PDP returns a data.frame and includes Petal.Length values
+pdp_res <- partial(rf, pred.var = "Petal.Length", prob = TRUE, which.class = "setosa", plot = FALSE)
+stopifnot(is.data.frame(pdp_res))
+stopifnot("Petal.Length" %in% names(pdp_res))
+
+list(tests = "all passed", tree_accuracy = acc_tree)
+```
+
+---
+  
+## 10. Exercises and in-class tasks
+  
+**Exercise A:** Build and prune a decision tree on the `wine` or `iris` dataset; show how pruning affects depth and accuracy.
+
+**Exercise B:** Compute PDPs for two top features in a caret-tuned model and interpret whether they are monotonic or have thresholds.
+
+**Exercise C (advanced):** Use `iml` to compute Shapley values for a small set of observations and compare with PDP insights.
+
+---
+  
+<!-- ## 11. Suggested slide/demo flow -->
+  
+<!-- 1. Briefly explain splits and impurity. -->
+<!-- 2. Live-code building a tree and visualizing it. -->
+<!-- 3. Show pruning and cross-validation. -->
+<!-- 4. Fit a random forest and compare performance. -->
+<!-- 5. Demonstrate PDPs and ICE plots; discuss interpretation. -->
+
+---
+  
+*End of Module 2 — Decision Tree Analysis & Partial Dependence*
+  
+  
+  
