@@ -1,4 +1,4 @@
-# Preface {.unnumbered}
+# Preface to the first edition {.unnumbered}
 
 <!-- This is a Quarto book. -->
 
@@ -11,7 +11,5 @@
 # 1 + 1
 
 ```
-
-# Preface to the first edition
 
 Welcome to the first edition of the book.
