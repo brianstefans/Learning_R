@@ -1,8 +1,8 @@
 # Preface {.unnumbered}
 
-This is a Quarto book.
+<!-- This is a Quarto book. -->
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
+<!-- To learn more about Quarto books visit <https://quarto.org/docs/books>. -->
 
 ```{r}
 #| echo: false
@@ -11,3 +11,7 @@ To learn more about Quarto books visit <https://quarto.org/docs/books>.
 # 1 + 1
 
 ```
+
+# Preface to the first edition
+
+Welcome to the first edition of the book.

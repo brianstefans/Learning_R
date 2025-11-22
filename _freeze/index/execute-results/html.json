@@ -1,11 +1,9 @@
 {
-  "hash": "1f7fade32eef8ccab26b531644c14705",
+  "hash": "5f81515f4c8dfb0f54cfe9e8abde8eda",
   "result": {
     "engine": "knitr",
-    "markdown": "# Preface {.unnumbered}\n\nThis is a Quarto book.\n\nTo learn more about Quarto books visit <https://quarto.org/docs/books>.\n\n\n::: {.cell}\n\n:::\n\n",
-    "supporting": [
-      "index_files"
-    ],
+    "markdown": "# Preface {.unnumbered}\n\n<!-- This is a Quarto book. -->\n\n<!-- To learn more about Quarto books visit <https://quarto.org/docs/books>. -->\n\n\n::: {.cell}\n\n:::\n\n\n# Preface to the first edition\n\nWelcome to the first edition of the book.",
+    "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],
