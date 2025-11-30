@@ -105,6 +105,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<link href="site_libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+<script src="site_libs/tabwid-1.1.3/tabwid.js"></script>
 
 
 </head>
@@ -186,11 +188,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#outlier-detection-and-treatment" id="toc-outlier-detection-and-treatment" class="nav-link" data-scroll-target="#outlier-detection-and-treatment"><span class="header-section-number">1.5</span> 4. Outlier detection and treatment</a></li>
   <li><a href="#feature-transformations" id="toc-feature-transformations" class="nav-link" data-scroll-target="#feature-transformations"><span class="header-section-number">1.6</span> 5. Feature transformations</a></li>
-  <li><a href="#preparing-for-pca-and-clustering" id="toc-preparing-for-pca-and-clustering" class="nav-link" data-scroll-target="#preparing-for-pca-and-clustering"><span class="header-section-number">1.7</span> 6. Preparing for PCA and clustering</a></li>
-  <li><a href="#full-pipeline-example" id="toc-full-pipeline-example" class="nav-link" data-scroll-target="#full-pipeline-example"><span class="header-section-number">1.8</span> 7. Full pipeline example</a></li>
-  <li><a href="#exercises-and-self-tests" id="toc-exercises-and-self-tests" class="nav-link" data-scroll-target="#exercises-and-self-tests"><span class="header-section-number">1.9</span> 8. Exercises and Self-tests</a></li>
-  <li><a href="#activities" id="toc-activities" class="nav-link" data-scroll-target="#activities"><span class="header-section-number">1.10</span> 9. Activities</a></li>
-  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading"><span class="header-section-number">1.11</span> 10. Further Reading</a></li>
+  <li><a href="#principle-component-analysis" id="toc-principle-component-analysis" class="nav-link" data-scroll-target="#principle-component-analysis"><span class="header-section-number">1.7</span> 6. Principle Component Analysis</a>
+  <ul class="collapse">
+  <li><a href="#preparing-for-pca" id="toc-preparing-for-pca" class="nav-link" data-scroll-target="#preparing-for-pca"><span class="header-section-number">1.7.1</span> Preparing for PCA</a></li>
+  <li><a href="#k-means-clustering-deep-dive" id="toc-k-means-clustering-deep-dive" class="nav-link" data-scroll-target="#k-means-clustering-deep-dive"><span class="header-section-number">1.7.2</span> 2. K-Means Clustering (Deep Dive)</a></li>
+  <li><a href="#visualizing-k-means-clusters" id="toc-visualizing-k-means-clusters" class="nav-link" data-scroll-target="#visualizing-k-means-clusters"><span class="header-section-number">1.7.3</span> 2.2 Visualizing K-Means Clusters</a></li>
+  <li><a href="#hierarchical-clustering" id="toc-hierarchical-clustering" class="nav-link" data-scroll-target="#hierarchical-clustering"><span class="header-section-number">1.7.4</span> 3. Hierarchical Clustering</a></li>
+  </ul></li>
+  <li><a href="#exercises-and-self-tests" id="toc-exercises-and-self-tests" class="nav-link" data-scroll-target="#exercises-and-self-tests"><span class="header-section-number">1.8</span> 8. Exercises and Self-tests</a></li>
+  <li><a href="#activities" id="toc-activities" class="nav-link" data-scroll-target="#activities"><span class="header-section-number">1.9</span> 9. Activities</a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading"><span class="header-section-number">1.10</span> 10. Further Reading</a></li>
   </ul>
 </nav>
     </div>
@@ -421,86 +428,299 @@ Datsun 710    3.126761   4 7.754245 4.532599</code></pre>
 </div>
 <hr>
 </section>
-<section id="preparing-for-pca-and-clustering" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="preparing-for-pca-and-clustering"><span class="header-section-number">1.7</span> 6. Preparing for PCA and clustering</h2>
-<p>Checklist: - Handle missing values - Numeric only - Center and scale - Remove near-zero variance</p>
+<section id="principle-component-analysis" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="principle-component-analysis"><span class="header-section-number">1.7</span> 6. Principle Component Analysis</h2>
+<p>Principle Component Analysis is a transformation technique that focuses on dimensionaliity reduction. This entails transforming a dataset with a large number of variables into less variables that contain most of the information of the affected variables. The technique is split into 3 concepts as below</p>
+<ul>
+<li>Dimensionality Reduction where the large number of variables are condensed into smaller variables that are a representation of the large ones.</li>
+<li>Principal Components which are the new variables. These are a linear combination of the original variables and are ordered by the amount of the variance they capture.</li>
+<li>Variance: PCA assumes that the information is carried in the variance of the features. The higher the variation in a feature, the more information it carries.</li>
+</ul>
+<section id="preparing-for-pca" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="preparing-for-pca"><span class="header-section-number">1.7.1</span> Preparing for PCA</h3>
+<p>Checklist: - Handle missing values - Numeric only - Center and scale / standardization - Remove near-zero variance</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pp_pipeline <span class="ot">&lt;-</span> <span class="fu">preProcess</span>(iris[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"center"</span>, <span class="st">"scale"</span>))</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>iris_scaled <span class="ot">&lt;-</span> <span class="fu">predict</span>(pp_pipeline, iris[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>pca_res <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(iris_scaled)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pca_res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Importance of components:
-                          PC1    PC2     PC3     PC4
-Standard deviation     1.7084 0.9560 0.38309 0.14393
-Proportion of Variance 0.7296 0.2285 0.03669 0.00518
-Cumulative Proportion  0.7296 0.9581 0.99482 1.00000</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pp_pipeline <span class="ot">&lt;-</span> <span class="fu">preProcess</span>(iris[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"center"</span>, <span class="st">"scale"</span>)) <span class="do">## centering and scaling the dataset</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>iris_scaled <span class="ot">&lt;-</span> <span class="fu">predict</span>(pp_pipeline, iris[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]) <span class="do">## applying the behaviour to the dataset</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>pca_res <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(iris_scaled) <span class="do">## getting the princple components</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(pca_res)</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(pca_res, type = "l", main = "Scree plot")</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>pca_dta <span class="ot">&lt;-</span> pca_res<span class="sc">$</span>x <span class="sc">%&gt;%</span><span class="fu">data.frame</span>() </span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>pca_dta<span class="sc">%&gt;%</span> <span class="fu">head</span>() <span class="sc">%&gt;%</span>   flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">autofit</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-80888dcc{}.cl-805b0f46{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-806d1a2e{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-806d86ee{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d870c{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d8716{width:1.143in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d8720{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d872a{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d8734{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d873e{width:1.143in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d8748{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d8752{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d875c{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d875d{width:1.143in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-806d8770{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-80888dcc"><thead><tr style="overflow-wrap:break-word;"><th class="cl-806d86ee"><p class="cl-806d1a2e"><span class="cl-805b0f46">PC1</span></p></th><th class="cl-806d870c"><p class="cl-806d1a2e"><span class="cl-805b0f46">PC2</span></p></th><th class="cl-806d8716"><p class="cl-806d1a2e"><span class="cl-805b0f46">PC3</span></p></th><th class="cl-806d8720"><p class="cl-806d1a2e"><span class="cl-805b0f46">PC4</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-806d872a"><p class="cl-806d1a2e"><span class="cl-805b0f46">-2.257141</span></p></td><td class="cl-806d8734"><p class="cl-806d1a2e"><span class="cl-805b0f46">-0.4784238</span></p></td><td class="cl-806d873e"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.12727962</span></p></td><td class="cl-806d8748"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.024087508</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-806d872a"><p class="cl-806d1a2e"><span class="cl-805b0f46">-2.074013</span></p></td><td class="cl-806d8734"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.6718827</span></p></td><td class="cl-806d873e"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.23382552</span></p></td><td class="cl-806d8748"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.102662845</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-806d872a"><p class="cl-806d1a2e"><span class="cl-805b0f46">-2.356335</span></p></td><td class="cl-806d8734"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.3407664</span></p></td><td class="cl-806d873e"><p class="cl-806d1a2e"><span class="cl-805b0f46">-0.04405390</span></p></td><td class="cl-806d8748"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.028282305</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-806d872a"><p class="cl-806d1a2e"><span class="cl-805b0f46">-2.291707</span></p></td><td class="cl-806d8734"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.5953999</span></p></td><td class="cl-806d873e"><p class="cl-806d1a2e"><span class="cl-805b0f46">-0.09098530</span></p></td><td class="cl-806d8748"><p class="cl-806d1a2e"><span class="cl-805b0f46">-0.065735340</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-806d872a"><p class="cl-806d1a2e"><span class="cl-805b0f46">-2.381863</span></p></td><td class="cl-806d8734"><p class="cl-806d1a2e"><span class="cl-805b0f46">-0.6446757</span></p></td><td class="cl-806d873e"><p class="cl-806d1a2e"><span class="cl-805b0f46">-0.01568565</span></p></td><td class="cl-806d8748"><p class="cl-806d1a2e"><span class="cl-805b0f46">-0.035802870</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-806d8752"><p class="cl-806d1a2e"><span class="cl-805b0f46">-2.068701</span></p></td><td class="cl-806d875c"><p class="cl-806d1a2e"><span class="cl-805b0f46">-1.4842053</span></p></td><td class="cl-806d875d"><p class="cl-806d1a2e"><span class="cl-805b0f46">-0.02687825</span></p></td><td class="cl-806d8770"><p class="cl-806d1a2e"><span class="cl-805b0f46">0.006586116</span></p></td></tr></tbody></table></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pca_res, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="st">"Scree plot"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Visualizing the scree plot. This is used to visualize the eigenvalues or the proportion of variance explained by each principal component (PC).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'factoextra' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoMineR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'FactoMineR' was built under R version 4.3.3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(pca_res, </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">addlabels =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">70</span>),</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">main=</span><span class="st">"Figure 5: Scree Plot"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="module1_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="module1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<hr>
-</section>
-<section id="full-pipeline-example" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="full-pipeline-example"><span class="header-section-number">1.8</span> 7. Full pipeline example</h2>
+<p>Explaining the variance</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>iris_num <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span> <span class="fu">select_if</span>(is.numeric)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>nzv <span class="ot">&lt;-</span> <span class="fu">nearZeroVar</span>(iris_num)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>iris_num2 <span class="ot">&lt;-</span> iris_num[, <span class="sc">-</span>nzv]</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>pp <span class="ot">&lt;-</span> <span class="fu">preProcess</span>(iris_num2, <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"scale"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in pre_process_options(method, column_types): The following
-pre-processing methods were eliminated: 'scale'</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>iris_ready <span class="ot">&lt;-</span> <span class="fu">predict</span>(pp, iris_num2)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(iris_ready, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="at">mean =</span> <span class="fu">mean</span>(x), <span class="at">sd =</span> <span class="fu">sd</span>(x)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pca_var <span class="ot">&lt;-</span> pca_res<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>pca_var <span class="sc">/</span> <span class="fu">sum</span>(pca_var)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>named numeric(0)</code></pre>
+<pre><code>[1] 0.729624454 0.228507618 0.036689219 0.005178709</code></pre>
 </div>
+</div>
+<p>Comparing the PCA output and the current classifications</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>iris_pca <span class="ot">&lt;-</span> pca_dta <span class="sc">%&gt;%</span> <span class="fu">bind_cols</span>(iris <span class="sc">%&gt;%</span> <span class="fu">select</span>(Species))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>iris_pca <span class="sc">%&gt;%</span> </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> PC1, </span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> PC2, </span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> Species)) <span class="sc">+</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>       <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>       <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"#CC0066"</span>, <span class="st">"green2"</span>)) <span class="sc">+</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>       <span class="fu">stat_ellipse</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Ellipse Plot"</span>) <span class="sc">+</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>       <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="module1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">## 7. Clustering</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">## Learning Outcomes By the end of this module, learners will be able to: - Prepare data for clustering (scaling, distance measures, PCA-based preprocessing). - Perform K-Means, Hierarchical, and Density-Based clustering. - Evaluate clusters using Silhouette Width, Dunn Index, and internal metrics. - Interpret clusters visually using PCA and advanced plotting.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">### 1. Data Preparation for Clustering</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Before clustering, ensure variables are scaled correctly:</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">::: {.cell}</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>{.r .cell-code} scaled_data &lt;- scale(iris[,1:4]) head(scaled_data)</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">::: {.cell-output .cell-output-stdout}</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Sepal.Length Sepal.Width Petal.Length Petal.Width [1,]   -0.8976739  1.01560199    -1.335752   -1.311052 [2,]   -1.1392005 -0.13153881    -1.335752   -1.311052 [3,]   -1.3807271  0.32731751    -1.392399   -1.311052 [4,]   -1.5014904  0.09788935    -1.279104   -1.311052 [5,]   -1.0184372  1.24503015    -1.335752   -1.311052 [6,]   -0.5353840  1.93331463    -1.165809   -1.048667</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">::: :::</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Key concepts:</strong> - Distance-based algorithms require standardized input. - PCA helps reduce multicollinearity and compress correlated features.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="k-means-clustering-deep-dive" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="k-means-clustering-deep-dive"><span class="header-section-number">1.7.2</span> 2. K-Means Clustering (Deep Dive)</h3>
+<section id="running-k-means" class="level4" data-number="1.7.2.1">
+<h4 data-number="1.7.2.1" class="anchored" data-anchor-id="running-k-means"><span class="header-section-number">1.7.2.1</span> 2.1 Running K-Means</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(scaled_data, <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>kmeans_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>K-means clustering with 3 clusters of sizes 50, 53, 47
+
+Cluster means:
+  Sepal.Length Sepal.Width Petal.Length Petal.Width
+1  -1.01119138  0.85041372   -1.3006301  -1.2507035
+2  -0.05005221 -0.88042696    0.3465767   0.2805873
+3   1.13217737  0.08812645    0.9928284   1.0141287
+
+Clustering vector:
+  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 3 3 3 2 2 2 3 2 2 2 2 2 2 2 2 3 2 2 2 2 3 2 2 2
+ [75] 2 3 3 3 2 2 2 2 2 2 2 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 3 3 3 3 2 3 3 3 3
+[112] 3 3 2 2 3 3 3 3 2 3 2 3 2 3 3 2 3 3 3 3 3 3 2 2 3 3 3 2 3 3 3 2 3 3 3 2 3
+[149] 3 2
+
+Within cluster sum of squares by cluster:
+[1] 47.35062 44.08754 47.45019
+ (between_SS / total_SS =  76.7 %)
+
+Available components:
+
+[1] "cluster"      "centers"      "totss"        "withinss"     "tot.withinss"
+[6] "betweenss"    "size"         "iter"         "ifault"      </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="visualizing-k-means-clusters" class="level3" data-number="1.7.3">
+<h3 data-number="1.7.3" class="anchored" data-anchor-id="visualizing-k-means-clusters"><span class="header-section-number">1.7.3</span> 2.2 Visualizing K-Means Clusters</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Scale data</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>scaled_data <span class="ot">&lt;-</span> <span class="fu">scale</span>(iris[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Run PCA</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>pca1 <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(scaled_data, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>pca_scores <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pca1<span class="sc">$</span>x[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])  <span class="co"># PC1 and PC2</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Run K-means </span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(scaled_data, <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Build dataframe for plotting</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>cluster_df <span class="ot">&lt;-</span> <span class="fu">cbind</span>(pca_scores, <span class="at">cluster =</span> <span class="fu">as.factor</span>(kmeans_fit<span class="sc">$</span>cluster))</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Plot</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cluster_df, <span class="fu">aes</span>(PC1, PC2, <span class="at">color =</span> cluster)) <span class="sc">+</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="module1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="cluster-evaluation" class="level4" data-number="1.7.3.1">
+<h4 data-number="1.7.3.1" class="anchored" data-anchor-id="cluster-evaluation"><span class="header-section-number">1.7.3.1</span> 2.3 Cluster Evaluation</h4>
+<p><strong>Elbow Method:</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>els <span class="ot">&lt;-</span> <span class="fu">vector</span>()</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  els[k] <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(scaled_data, <span class="at">centers =</span> k, <span class="at">nstart =</span> <span class="dv">20</span>)<span class="sc">$</span>tot.withinss</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, els, <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="module1_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Silhouette Score:</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>sil <span class="ot">&lt;-</span> <span class="fu">silhouette</span>(kmeans_fit<span class="sc">$</span>cluster, <span class="fu">dist</span>(scaled_data))</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sil)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="module1_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(sil[,<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4599482</code></pre>
+</div>
+</div>
+<p>Interpretation: Scores close to <strong>1</strong> indicate well-separated clusters.</p>
+</section>
+</section>
+<section id="hierarchical-clustering" class="level3" data-number="1.7.4">
+<h3 data-number="1.7.4" class="anchored" data-anchor-id="hierarchical-clustering"><span class="header-section-number">1.7.4</span> 3. Hierarchical Clustering</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>dist_mat <span class="ot">&lt;-</span> <span class="fu">dist</span>(scaled_data)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>fit_hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>(dist_mat, <span class="at">method =</span> <span class="st">"ward.D2"</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_hc)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rect.hclust</span>(fit_hc, <span class="at">k =</span> <span class="dv">3</span>, <span class="at">border =</span> <span class="st">"red"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="module1_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Discussion:</strong> When to use hierarchical vs K-means.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="do">### 4. DBSCAN (Density-Based Clustering)</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># library(dbscan)</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(42)</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co"># db &lt;- dbscan(scaled_data, eps = 0.5, minPts = 5)</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(db, scaled_data)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Useful for non-spherical clusters; can detect noise.</p>
+<hr>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 7. Full pipeline example</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co"># iris_num &lt;- iris %&gt;% select_if(is.numeric)</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># nzv &lt;- nearZeroVar(iris_num)</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co"># iris_num2 &lt;- iris_num[, -nzv]</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co"># pp &lt;- preProcess(iris_num2, method = c("scale"))</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co"># iris_ready &lt;- predict(pp, iris_num2)</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co"># apply(iris_ready, 2, function(x) c(mean = mean(x), sd = sd(x)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
-<section id="exercises-and-self-tests" class="level2" data-number="1.9">
-<h2 data-number="1.9" class="anchored" data-anchor-id="exercises-and-self-tests"><span class="header-section-number">1.9</span> 8. Exercises and Self-tests</h2>
+</section>
+<section id="exercises-and-self-tests" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="exercises-and-self-tests"><span class="header-section-number">1.8</span> 8. Exercises and Self-tests</h2>
 <p><strong>Exercise 1:</strong> Write <code>zscore_df()</code> to z-score numeric columns.</p>
 <p><strong>Exercise 2:</strong> Write <code>minmax_df()</code> to normalize numeric columns.</p>
 <p><strong>Exercise 3:</strong> Write <code>iqr_outliers()</code> that returns indices of outliers.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>zscore_df <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  num <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">select_if</span>(is.numeric)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="fu">scale</span>(num))</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>z_mtcars <span class="ot">&lt;-</span> <span class="fu">zscore_df</span>(mtcars)</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">sapply</span>(z_mtcars, mean)</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sapply</span>(z_mtcars, sd)</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">abs</span>(means) <span class="sc">&lt;</span> <span class="fl">1e-8</span>))</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">abs</span>(sds <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">&lt;</span> <span class="fl">1e-8</span>))</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>minmax_df <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  num <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">select_if</span>(is.numeric)</span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="fu">lapply</span>(num, <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x))))</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>mm_mtcars <span class="ot">&lt;-</span> <span class="fu">minmax_df</span>(mtcars)</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>ranges <span class="ot">&lt;-</span> <span class="fu">apply</span>(mm_mtcars, <span class="dv">2</span>, range)</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(ranges[<span class="dv">1</span>,] <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">-</span> <span class="fl">1e-8</span>))</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(ranges[<span class="dv">2</span>,] <span class="sc">&lt;=</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">1e-8</span>))</span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>iqr_outliers <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>  q1 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="fl">0.25</span>)</span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>  q3 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="fl">0.75</span>)</span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>  iqr <span class="ot">&lt;-</span> q3 <span class="sc">-</span> q1</span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which</span>(x <span class="sc">&lt;</span> (q1 <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr) <span class="sc">|</span> x <span class="sc">&gt;</span> (q3 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr))</span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>), <span class="dv">10</span>, <span class="sc">-</span><span class="dv">10</span>)</span>
-<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>outs <span class="ot">&lt;-</span> <span class="fu">iqr_outliers</span>(x)</span>
-<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a><span class="co"># stopifnot(all(outs %in% c(101,102)))</span></span>
-<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="at">tests =</span> <span class="st">"all passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>zscore_df <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  num <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">select_if</span>(is.numeric)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="fu">scale</span>(num))</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>z_mtcars <span class="ot">&lt;-</span> <span class="fu">zscore_df</span>(mtcars)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">sapply</span>(z_mtcars, mean)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sapply</span>(z_mtcars, sd)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">abs</span>(means) <span class="sc">&lt;</span> <span class="fl">1e-8</span>))</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">abs</span>(sds <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">&lt;</span> <span class="fl">1e-8</span>))</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>minmax_df <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>  num <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">select_if</span>(is.numeric)</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="fu">lapply</span>(num, <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x))))</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>mm_mtcars <span class="ot">&lt;-</span> <span class="fu">minmax_df</span>(mtcars)</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>ranges <span class="ot">&lt;-</span> <span class="fu">apply</span>(mm_mtcars, <span class="dv">2</span>, range)</span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(ranges[<span class="dv">1</span>,] <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">-</span> <span class="fl">1e-8</span>))</span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(ranges[<span class="dv">2</span>,] <span class="sc">&lt;=</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">1e-8</span>))</span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>iqr_outliers <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>  q1 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="fl">0.25</span>)</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>  q3 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="fl">0.75</span>)</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>  iqr <span class="ot">&lt;-</span> q3 <span class="sc">-</span> q1</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which</span>(x <span class="sc">&lt;</span> (q1 <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr) <span class="sc">|</span> x <span class="sc">&gt;</span> (q3 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr))</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>), <span class="dv">10</span>, <span class="sc">-</span><span class="dv">10</span>)</span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a>outs <span class="ot">&lt;-</span> <span class="fu">iqr_outliers</span>(x)</span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a><span class="co"># stopifnot(all(outs %in% c(101,102)))</span></span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="at">tests =</span> <span class="st">"all passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$tests
 [1] "all passed"</code></pre>
@@ -508,17 +728,18 @@ pre-processing methods were eliminated: 'scale'</code></pre>
 </div>
 <hr>
 </section>
-<section id="activities" class="level2" data-number="1.10">
-<h2 data-number="1.10" class="anchored" data-anchor-id="activities"><span class="header-section-number">1.10</span> 9. Activities</h2>
+<section id="activities" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="activities"><span class="header-section-number">1.9</span> 9. Activities</h2>
 <ul>
 <li>Group task: clean and preprocess a messy dataset.</li>
 <li>Visualization sprint: compare histograms before/after scaling.</li>
 <li>Quick quiz: normalization vs standardization scenarios.</li>
+<li>PCA: Perform PCA on the wine dataset and interpret first three PCs</li>
 </ul>
 <hr>
 </section>
-<section id="further-reading" class="level2" data-number="1.11">
-<h2 data-number="1.11" class="anchored" data-anchor-id="further-reading"><span class="header-section-number">1.11</span> 10. Further Reading</h2>
+<section id="further-reading" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="further-reading"><span class="header-section-number">1.10</span> 10. Further Reading</h2>
 <ul>
 <li><a href="https://topepo.github.io/caret/pre-processing.html">caret::preProcess documentation</a></li>
 <li><a href="https://posit.co/resources/cheatsheets/">Tidyverse cheatsheets</a></li>
