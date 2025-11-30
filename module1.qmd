@@ -149,29 +149,180 @@ predict(bc_pp, mtcars)[1:3, 1:4]
 
 ------------------------------------------------------------------------
 
-## 6. Preparing for PCA and clustering
+## 6. Principle Component Analysis
 
-Checklist: - Handle missing values - Numeric only - Center and scale - Remove near-zero variance
+Principle Component Analysis is a transformation technique that focuses on dimensionaliity reduction. This entails transforming a dataset with a large number of variables into less variables that contain most of the information of the affected variables. The technique is split into 3 concepts as below
+
+-   Dimensionality Reduction where the large number of variables are condensed into smaller variables that are a representation of the large ones.
+-   Principal Components which are the new variables. These are a linear combination of the original variables and are ordered by the amount of the variance they capture.
+-   Variance: PCA assumes that the information is carried in the variance of the features. The higher the variation in a feature, the more information it carries.
+
+
+### Preparing for PCA
+
+Checklist: - Handle missing values - Numeric only - Center and scale / standardization - Remove near-zero variance
 
 ```{r}
-pp_pipeline <- preProcess(iris[,1:4], method = c("center", "scale"))
-iris_scaled <- predict(pp_pipeline, iris[,1:4])
-pca_res <- prcomp(iris_scaled)
-summary(pca_res)
-plot(pca_res, type = "l", main = "Scree plot")
+pp_pipeline <- preProcess(iris[,1:4], method = c("center", "scale")) ## centering and scaling the dataset
+iris_scaled <- predict(pp_pipeline, iris[,1:4]) ## applying the behaviour to the dataset
+pca_res <- prcomp(iris_scaled) ## getting the princple components
+# summary(pca_res)
+# plot(pca_res, type = "l", main = "Scree plot")
+
+pca_dta <- pca_res$x %>%data.frame() 
+pca_dta%>% head() %>%   flextable::flextable() %>% flextable::autofit()
+```
+
+Visualizing the scree plot. This is used to visualize the eigenvalues or the proportion of variance explained by each principal component (PC).
+```{r}
+library(factoextra)
+library(FactoMineR)
+
+fviz_eig(pca_res, 
+         addlabels = TRUE, 
+         ylim = c(0, 70),
+         main="Figure 5: Scree Plot")
+```
+
+Explaining the variance
+```{r}
+
+pca_var <- pca_res$sdev^2
+pca_var / sum(pca_var)
+
+```
+
+Comparing the PCA output and the current classifications
+```{r}
+iris_pca <- pca_dta %>% bind_cols(iris %>% select(Species))
+
+iris_pca %>% 
+  ggplot(
+       aes(x = PC1, 
+       y = PC2, 
+       color = Species)) +
+       geom_point() +
+       scale_color_manual(values=c("black", "#CC0066", "green2")) +
+       stat_ellipse() + ggtitle("Ellipse Plot") +
+       theme_bw()+
+  theme(legend.position = "top")
 ```
 
 ------------------------------------------------------------------------
+## 7. Clustering 
 
-## 7. Full pipeline example
+## Learning Outcomes
+By the end of this module, learners will be able to:
+-   Prepare data for clustering (scaling, distance measures, PCA-based preprocessing).
+-   Perform K-Means, Hierarchical, and Density-Based clustering.
+-   Evaluate clusters using Silhouette Width, Dunn Index, and internal metrics.
+-   Interpret clusters visually using PCA and advanced plotting.
+
+### 1. Data Preparation for Clustering
+  
+Before clustering, ensure variables are scaled correctly:
 
 ```{r}
-iris_num <- iris %>% select_if(is.numeric)
-nzv <- nearZeroVar(iris_num)
-iris_num2 <- iris_num[, -nzv]
-pp <- preProcess(iris_num2, method = c("scale"))
-iris_ready <- predict(pp, iris_num2)
-apply(iris_ready, 2, function(x) c(mean = mean(x), sd = sd(x)))
+scaled_data <- scale(iris[,1:4])
+head(scaled_data)
+```
+
+**Key concepts:**
+-   Distance-based algorithms require standardized input.
+-   PCA helps reduce multicollinearity and compress correlated features.
+
+---
+  
+### 2. K-Means Clustering (Deep Dive)
+  
+#### 2.1 Running K-Means
+  
+```{r}
+set.seed(123)
+kmeans_fit <- kmeans(scaled_data, centers = 3, nstart = 25)
+kmeans_fit
+```
+
+### 2.2 Visualizing K-Means Clusters
+
+```{r}
+# 1. Scale data
+scaled_data <- scale(iris[,1:4])
+
+# 2. Run PCA
+pca1 <- prcomp(scaled_data, scale. = TRUE)
+pca_scores <- as.data.frame(pca1$x[, 1:2])  # PC1 and PC2
+
+# 3. Run K-means 
+set.seed(123)
+kmeans_fit <- kmeans(scaled_data, centers = 3, nstart = 25)
+
+# 4. Build dataframe for plotting
+cluster_df <- cbind(pca_scores, cluster = as.factor(kmeans_fit$cluster))
+
+# 5. Plot
+ggplot(cluster_df, aes(PC1, PC2, color = cluster)) +
+  geom_point(size = 3) +
+  theme_minimal()
+```
+
+#### 2.3 Cluster Evaluation
+  
+**Elbow Method:**
+  
+```{r}
+els <- vector()
+for (k in 1:10) {
+  els[k] <- kmeans(scaled_data, centers = k, nstart = 20)$tot.withinss
+}
+plot(1:10, els, type = "b", pch = 19)
+```
+
+**Silhouette Score:**
+  
+```{r}
+library(cluster)
+sil <- silhouette(kmeans_fit$cluster, dist(scaled_data))
+plot(sil)
+mean(sil[,3])
+```
+
+Interpretation: Scores close to **1** indicate well-separated clusters.
+
+### 3. Hierarchical Clustering
+  
+```{r}
+dist_mat <- dist(scaled_data)
+fit_hc <- hclust(dist_mat, method = "ward.D2")
+plot(fit_hc)
+rect.hclust(fit_hc, k = 3, border = "red")
+```
+
+**Discussion:** When to use hierarchical vs K-means.
+
+```{r}
+
+### 4. DBSCAN (Density-Based Clustering)
+  
+# library(dbscan)
+# set.seed(42)
+# db <- dbscan(scaled_data, eps = 0.5, minPts = 5)
+# plot(db, scaled_data)
+```
+
+Useful for non-spherical clusters; can detect noise.
+
+------------------------------------------------------------------------
+
+```{r}
+## 7. Full pipeline example
+
+# iris_num <- iris %>% select_if(is.numeric)
+# nzv <- nearZeroVar(iris_num)
+# iris_num2 <- iris_num[, -nzv]
+# pp <- preProcess(iris_num2, method = c("scale"))
+# iris_ready <- predict(pp, iris_num2)
+# apply(iris_ready, 2, function(x) c(mean = mean(x), sd = sd(x)))
 ```
 
 ------------------------------------------------------------------------
@@ -223,6 +374,7 @@ list(tests = "all passed")
 -   Group task: clean and preprocess a messy dataset.
 -   Visualization sprint: compare histograms before/after scaling.
 -   Quick quiz: normalization vs standardization scenarios.
+-   PCA: Perform PCA on the wine dataset and interpret first three PCs
 
 ------------------------------------------------------------------------
 
