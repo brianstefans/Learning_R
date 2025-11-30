@@ -280,6 +280,8 @@ plot(1:10, els, type = "b", pch = 19)
 
 **Silhouette Score:**
   
+The Silhouette Score is used to evaluate the quality of clusters in a clustering algorithm. It measures how similar a sample is to its own cluster compared to other clusters. The score ranges from -1 to 1, where a higher score indicates better-defined clusters.A score close to 1 indicates that the sample is well-clustered, a score close to 0 indicates overlapping clusters, and a negative score indicates that the sample might be assigned to the wrong cluster.
+
 ```{r}
 library(cluster)
 sil <- silhouette(kmeans_fit$cluster, dist(scaled_data))
