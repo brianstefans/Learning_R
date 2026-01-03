@@ -120,7 +120,7 @@ iqr_rule <- function(x) {
   q1 <- quantile(x, 0.25)
   q3 <- quantile(x, 0.75)
   iqr <- q3 - q1
-  x < (q1 - 1.5 * iqr) | x > (q3 + 1.5 * iqr)
+  x < (q1 - 1.5 * iqr) |  x > (q3 + 1.5 * iqr)
 }
 out_flags <- iqr_rule(iris$Sepal.Length)
 sum(out_flags)
@@ -163,9 +163,9 @@ Principle Component Analysis is a transformation technique that focuses on dimen
 Checklist: - Handle missing values - Numeric only - Center and scale / standardization - Remove near-zero variance
 
 ```{r}
-pp_pipeline <- preProcess(iris[,1:4], method = c("center", "scale")) ## centering and scaling the dataset
-iris_scaled <- predict(pp_pipeline, iris[,1:4]) ## applying the behaviour to the dataset
-pca_res <- prcomp(iris_scaled) ## getting the princple components
+pp_pipeline <- preProcess(iris[,1:4], method = c("center", "scale")) ## centering and scaling the data set
+iris_scaled <- predict(pp_pipeline, iris[,1:4]) ## applying the behavior to the data set
+pca_res <- prcomp(iris_scaled) ## getting the principle components
 # summary(pca_res)
 # plot(pca_res, type = "l", main = "Scree plot")
 
@@ -196,8 +196,10 @@ Comparing the PCA output and the current classifications
 ```{r}
 iris_pca <- pca_dta %>% bind_cols(iris %>% select(Species))
 
-iris_pca %>% 
-  ggplot(
+pca_dta$Species = iris$Species
+
+# iris_pca %>% 
+  ggplot(iris_pca,
        aes(x = PC1, 
        y = PC2, 
        color = Species)) +
@@ -209,16 +211,17 @@ iris_pca %>%
 ```
 
 ------------------------------------------------------------------------
+
 ## 7. Clustering 
 
-## Learning Outcomes
+### Learning Outcomes 
 By the end of this module, learners will be able to:
 -   Prepare data for clustering (scaling, distance measures, PCA-based preprocessing).
 -   Perform K-Means, Hierarchical, and Density-Based clustering.
 -   Evaluate clusters using Silhouette Width, Dunn Index, and internal metrics.
 -   Interpret clusters visually using PCA and advanced plotting.
 
-### 1. Data Preparation for Clustering
+### 1. Data Preparation for Clustering 
   
 Before clustering, ensure variables are scaled correctly:
 
@@ -250,7 +253,7 @@ kmeans_fit
 scaled_data <- scale(iris[,1:4])
 
 # 2. Run PCA
-pca1 <- prcomp(scaled_data, scale. = TRUE)
+pca1 <- prcomp(scaled_data)
 pca_scores <- as.data.frame(pca1$x[, 1:2])  # PC1 and PC2
 
 # 3. Run K-means 
