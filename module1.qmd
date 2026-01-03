@@ -279,6 +279,13 @@ for (k in 1:10) {
   els[k] <- kmeans(scaled_data, centers = k, nstart = 20)$tot.withinss
 }
 plot(1:10, els, type = "b", pch = 19)
+
+```
+
+using another approach that considers the average silhouette 
+
+```{r}
+fviz_nbclust(scaled_data, kmeans, method = "silhouette")
 ```
 
 **Silhouette Score:**
