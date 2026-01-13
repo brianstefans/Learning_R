@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; Module 2 — Decision Tree Analysis &amp; Partial Dependence – Applied Data Analysis and Machine Learning in R</title>
+<title>3&nbsp; Module 3 — Decision Tree Analysis &amp; Partial Dependence – Applied Data Analysis and Machine Learning in R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./module1.html" rel="prev">
+<link href="./module3.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -116,7 +116,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./module2.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Module 2 — Decision Tree Analysis &amp; Partial Dependence</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./module2.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Module 3 — Decision Tree Analysis &amp; Partial Dependence</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -155,8 +155,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./module3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Module 2 — Data Visualization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./module2.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Module 2 — Decision Tree Analysis &amp; Partial Dependence</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Module 3 — Decision Tree Analysis &amp; Partial Dependence</span></span></a>
   </div>
 </li>
     </ul>
@@ -169,21 +175,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-outcomes" id="toc-learning-outcomes" class="nav-link active" data-scroll-target="#learning-outcomes"><span class="header-section-number">2.1</span> Learning Outcomes</a></li>
-  <li><a href="#setup-packages" id="toc-setup-packages" class="nav-link" data-scroll-target="#setup-packages"><span class="header-section-number">2.2</span> 1. Setup &amp; packages</a></li>
-  <li><a href="#decision-tree-basics-intuition" id="toc-decision-tree-basics-intuition" class="nav-link" data-scroll-target="#decision-tree-basics-intuition"><span class="header-section-number">2.3</span> 2. Decision tree basics (intuition)</a></li>
-  <li><a href="#building-a-classification-tree-code-along" id="toc-building-a-classification-tree-code-along" class="nav-link" data-scroll-target="#building-a-classification-tree-code-along"><span class="header-section-number">2.4</span> 3. Building a classification tree (code-along)</a></li>
-  <li><a href="#cross-validation-and-tuning-with-caret" id="toc-cross-validation-and-tuning-with-caret" class="nav-link" data-scroll-target="#cross-validation-and-tuning-with-caret"><span class="header-section-number">2.5</span> 4. Cross-validation and tuning with caret</a></li>
-  <li><a href="#feature-importance-interpretation" id="toc-feature-importance-interpretation" class="nav-link" data-scroll-target="#feature-importance-interpretation"><span class="header-section-number">2.6</span> 5. Feature importance &amp; interpretation</a></li>
-  <li><a href="#partial-dependence-plots-pdps" id="toc-partial-dependence-plots-pdps" class="nav-link" data-scroll-target="#partial-dependence-plots-pdps"><span class="header-section-number">2.7</span> 6. Partial Dependence Plots (PDPs)</a>
+  <li><a href="#learning-outcomes" id="toc-learning-outcomes" class="nav-link active" data-scroll-target="#learning-outcomes"><span class="header-section-number">3.1</span> Learning Outcomes</a></li>
+  <li><a href="#setup-packages" id="toc-setup-packages" class="nav-link" data-scroll-target="#setup-packages"><span class="header-section-number">3.2</span> 1. Setup &amp; packages</a></li>
+  <li><a href="#decision-tree-basics-intuition" id="toc-decision-tree-basics-intuition" class="nav-link" data-scroll-target="#decision-tree-basics-intuition"><span class="header-section-number">3.3</span> 2. Decision tree basics (intuition)</a></li>
+  <li><a href="#building-a-classification-tree-code-along" id="toc-building-a-classification-tree-code-along" class="nav-link" data-scroll-target="#building-a-classification-tree-code-along"><span class="header-section-number">3.4</span> 3. Building a classification tree (code-along)</a></li>
+  <li><a href="#cross-validation-and-tuning-with-caret" id="toc-cross-validation-and-tuning-with-caret" class="nav-link" data-scroll-target="#cross-validation-and-tuning-with-caret"><span class="header-section-number">3.5</span> 4. Cross-validation and tuning with caret</a></li>
+  <li><a href="#feature-importance-interpretation" id="toc-feature-importance-interpretation" class="nav-link" data-scroll-target="#feature-importance-interpretation"><span class="header-section-number">3.6</span> 5. Feature importance &amp; interpretation</a></li>
+  <li><a href="#partial-dependence-plots-pdps" id="toc-partial-dependence-plots-pdps" class="nav-link" data-scroll-target="#partial-dependence-plots-pdps"><span class="header-section-number">3.7</span> 6. Partial Dependence Plots (PDPs)</a>
   <ul class="collapse">
-  <li><a href="#pdp-with-pdp" id="toc-pdp-with-pdp" class="nav-link" data-scroll-target="#pdp-with-pdp"><span class="header-section-number">2.7.1</span> 6.1 PDP with <code>pdp</code></a></li>
-  <li><a href="#pdp-with-dalex" id="toc-pdp-with-dalex" class="nav-link" data-scroll-target="#pdp-with-dalex"><span class="header-section-number">2.7.2</span> 6.2 PDP with <code>DALEX</code></a></li>
+  <li><a href="#pdp-with-pdp" id="toc-pdp-with-pdp" class="nav-link" data-scroll-target="#pdp-with-pdp"><span class="header-section-number">3.7.1</span> 6.1 PDP with <code>pdp</code></a></li>
+  <li><a href="#pdp-with-dalex" id="toc-pdp-with-dalex" class="nav-link" data-scroll-target="#pdp-with-dalex"><span class="header-section-number">3.7.2</span> 6.2 PDP with <code>DALEX</code></a></li>
   </ul></li>
-  <li><a href="#individual-conditional-expectation-ice-and-2d-pdps" id="toc-individual-conditional-expectation-ice-and-2d-pdps" class="nav-link" data-scroll-target="#individual-conditional-expectation-ice-and-2d-pdps"><span class="header-section-number">2.8</span> 7. Individual Conditional Expectation (ICE) and 2D PDPs</a></li>
-  <li><a href="#model-comparison-decision-tree-vs-random-forest" id="toc-model-comparison-decision-tree-vs-random-forest" class="nav-link" data-scroll-target="#model-comparison-decision-tree-vs-random-forest"><span class="header-section-number">2.9</span> 8. Model comparison: Decision Tree vs Random Forest</a></li>
-  <li><a href="#automated-tests-for-classroom-sanity-checks" id="toc-automated-tests-for-classroom-sanity-checks" class="nav-link" data-scroll-target="#automated-tests-for-classroom-sanity-checks"><span class="header-section-number">2.10</span> 9. Automated tests for classroom (sanity checks)</a></li>
-  <li><a href="#exercises-and-in-class-tasks" id="toc-exercises-and-in-class-tasks" class="nav-link" data-scroll-target="#exercises-and-in-class-tasks"><span class="header-section-number">2.11</span> 10. Exercises and in-class tasks</a></li>
+  <li><a href="#individual-conditional-expectation-ice-and-2d-pdps" id="toc-individual-conditional-expectation-ice-and-2d-pdps" class="nav-link" data-scroll-target="#individual-conditional-expectation-ice-and-2d-pdps"><span class="header-section-number">3.8</span> 7. Individual Conditional Expectation (ICE) and 2D PDPs</a></li>
+  <li><a href="#model-comparison-decision-tree-vs-random-forest" id="toc-model-comparison-decision-tree-vs-random-forest" class="nav-link" data-scroll-target="#model-comparison-decision-tree-vs-random-forest"><span class="header-section-number">3.9</span> 8. Model comparison: Decision Tree vs Random Forest</a></li>
+  <li><a href="#automated-tests-for-classroom-sanity-checks" id="toc-automated-tests-for-classroom-sanity-checks" class="nav-link" data-scroll-target="#automated-tests-for-classroom-sanity-checks"><span class="header-section-number">3.10</span> 9. Automated tests for classroom (sanity checks)</a></li>
+  <li><a href="#exercises-and-in-class-tasks" id="toc-exercises-and-in-class-tasks" class="nav-link" data-scroll-target="#exercises-and-in-class-tasks"><span class="header-section-number">3.11</span> 10. Exercises and in-class tasks</a></li>
   </ul>
 </nav>
     </div>
@@ -192,7 +198,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Module 2 — Decision Tree Analysis &amp; Partial Dependence</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Module 3 — Decision Tree Analysis &amp; Partial Dependence</span></h1>
 </div>
 
 
@@ -209,8 +215,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="learning-outcomes" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="learning-outcomes"><span class="header-section-number">2.1</span> Learning Outcomes</h2>
+<section id="learning-outcomes" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="learning-outcomes"><span class="header-section-number">3.1</span> Learning Outcomes</h2>
 <p>By the end of this module learners will be able to:</p>
 <ul>
 <li>Explain how decision trees split data (Gini, entropy) and the difference between classification and regression trees.</li>
@@ -221,17 +227,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <hr>
 </section>
-<section id="setup-packages" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="setup-packages"><span class="header-section-number">2.2</span> 1. Setup &amp; packages</h2>
+<section id="setup-packages" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="setup-packages"><span class="header-section-number">3.2</span> 1. Setup &amp; packages</h2>
 <hr>
 </section>
-<section id="decision-tree-basics-intuition" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="decision-tree-basics-intuition"><span class="header-section-number">2.3</span> 2. Decision tree basics (intuition)</h2>
+<section id="decision-tree-basics-intuition" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="decision-tree-basics-intuition"><span class="header-section-number">3.3</span> 2. Decision tree basics (intuition)</h2>
 <p>Short summary: trees recursively split the feature space to create homogeneous groups. Splits are chosen to maximize reduction in impurity (Gini or entropy for classification; MSE for regression).</p>
 <hr>
 </section>
-<section id="building-a-classification-tree-code-along" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="building-a-classification-tree-code-along"><span class="header-section-number">2.4</span> 3. Building a classification tree (code-along)</h2>
+<section id="building-a-classification-tree-code-along" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="building-a-classification-tree-code-along"><span class="header-section-number">3.4</span> 3. Building a classification tree (code-along)</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the iris dataset and create a reproducible train/test split</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(iris)</span>
@@ -331,8 +337,8 @@ n= 114
 </div>
 <hr>
 </section>
-<section id="cross-validation-and-tuning-with-caret" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="cross-validation-and-tuning-with-caret"><span class="header-section-number">2.5</span> 4. Cross-validation and tuning with caret</h2>
+<section id="cross-validation-and-tuning-with-caret" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="cross-validation-and-tuning-with-caret"><span class="header-section-number">3.5</span> 4. Cross-validation and tuning with caret</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ctrl <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">5</span>, <span class="at">classProbs =</span> <span class="cn">TRUE</span>, <span class="at">summaryFunction =</span> multiClassSummary)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
@@ -435,8 +441,8 @@ Balanced Accuracy           1.0000            0.8750           0.8125</code></pr
 <p><strong>Notes:</strong> <code>caret::train</code> automates CV and tuning. Explain multiClassSummary (accuracy, Kappa, etc.).</p>
 <hr>
 </section>
-<section id="feature-importance-interpretation" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="feature-importance-interpretation"><span class="header-section-number">2.6</span> 5. Feature importance &amp; interpretation</h2>
+<section id="feature-importance-interpretation" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="feature-importance-interpretation"><span class="header-section-number">3.6</span> 5. Feature importance &amp; interpretation</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable importance from rpart:</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">varImp</span>(fit_rpart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -462,11 +468,11 @@ Sepal.Width     0.00</code></pre>
 <p>Discuss how importance is computed (split improvement) and limitations.</p>
 <hr>
 </section>
-<section id="partial-dependence-plots-pdps" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="partial-dependence-plots-pdps"><span class="header-section-number">2.7</span> 6. Partial Dependence Plots (PDPs)</h2>
+<section id="partial-dependence-plots-pdps" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="partial-dependence-plots-pdps"><span class="header-section-number">3.7</span> 6. Partial Dependence Plots (PDPs)</h2>
 <p><strong>Goal:</strong> show marginal effect of a feature on predicted probability (or prediction) while averaging out other features.</p>
-<section id="pdp-with-pdp" class="level3" data-number="2.7.1">
-<h3 data-number="2.7.1" class="anchored" data-anchor-id="pdp-with-pdp"><span class="header-section-number">2.7.1</span> 6.1 PDP with <code>pdp</code></h3>
+<section id="pdp-with-pdp" class="level3" data-number="3.7.1">
+<h3 data-number="3.7.1" class="anchored" data-anchor-id="pdp-with-pdp"><span class="header-section-number">3.7.1</span> 6.1 PDP with <code>pdp</code></h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the caret-trained model (wrap predict function if necessary)</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pdp works with models that have a predict method returning probabilities. We'll use the randomForest wrapper as an example.</span></span>
@@ -484,8 +490,8 @@ Sepal.Width     0.00</code></pre>
 </div>
 </div>
 </section>
-<section id="pdp-with-dalex" class="level3" data-number="2.7.2">
-<h3 data-number="2.7.2" class="anchored" data-anchor-id="pdp-with-dalex"><span class="header-section-number">2.7.2</span> 6.2 PDP with <code>DALEX</code></h3>
+<section id="pdp-with-dalex" class="level3" data-number="3.7.2">
+<h3 data-number="3.7.2" class="anchored" data-anchor-id="pdp-with-dalex"><span class="header-section-number">3.7.2</span> 6.2 PDP with <code>DALEX</code></h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an explainer</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>explainer_rf <span class="ot">&lt;-</span> <span class="fu">explain</span>(rf, <span class="at">data =</span> train[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">y =</span> train<span class="sc">$</span>Species, <span class="at">label =</span> <span class="st">"rf_iris"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -517,8 +523,8 @@ Sepal.Width     0.00</code></pre>
 <hr>
 </section>
 </section>
-<section id="individual-conditional-expectation-ice-and-2d-pdps" class="level2" data-number="2.8">
-<h2 data-number="2.8" class="anchored" data-anchor-id="individual-conditional-expectation-ice-and-2d-pdps"><span class="header-section-number">2.8</span> 7. Individual Conditional Expectation (ICE) and 2D PDPs</h2>
+<section id="individual-conditional-expectation-ice-and-2d-pdps" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="individual-conditional-expectation-ice-and-2d-pdps"><span class="header-section-number">3.8</span> 7. Individual Conditional Expectation (ICE) and 2D PDPs</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ICE using pdp</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>ice_pl <span class="ot">&lt;-</span> <span class="fu">partial</span>(rf, <span class="at">pred.var =</span> <span class="st">"Petal.Length"</span>, <span class="at">ice =</span> <span class="cn">TRUE</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>, <span class="at">which.class =</span> <span class="st">"setosa"</span>)</span>
@@ -536,8 +542,8 @@ Sepal.Width     0.00</code></pre>
 </div>
 <hr>
 </section>
-<section id="model-comparison-decision-tree-vs-random-forest" class="level2" data-number="2.9">
-<h2 data-number="2.9" class="anchored" data-anchor-id="model-comparison-decision-tree-vs-random-forest"><span class="header-section-number">2.9</span> 8. Model comparison: Decision Tree vs Random Forest</h2>
+<section id="model-comparison-decision-tree-vs-random-forest" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="model-comparison-decision-tree-vs-random-forest"><span class="header-section-number">3.9</span> 8. Model comparison: Decision Tree vs Random Forest</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Random Forest and compare</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>rf_fit <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> train)</span>
@@ -554,8 +560,8 @@ rf   0.9444444</code></pre>
 <p>Discuss trade-offs: interpretability (tree) vs performance (RF), stability, and overfitting.</p>
 <hr>
 </section>
-<section id="automated-tests-for-classroom-sanity-checks" class="level2" data-number="2.10">
-<h2 data-number="2.10" class="anchored" data-anchor-id="automated-tests-for-classroom-sanity-checks"><span class="header-section-number">2.10</span> 9. Automated tests for classroom (sanity checks)</h2>
+<section id="automated-tests-for-classroom-sanity-checks" class="level2" data-number="3.10">
+<h2 data-number="3.10" class="anchored" data-anchor-id="automated-tests-for-classroom-sanity-checks"><span class="header-section-number">3.10</span> 9. Automated tests for classroom (sanity checks)</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Ensure tree predictions have reasonable accuracy (&gt; 0.7 on iris test)</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>acc_tree <span class="ot">&lt;-</span> cm<span class="sc">$</span>overall[<span class="st">"Accuracy"</span>]</span>
@@ -578,8 +584,8 @@ $tree_accuracy
 </div>
 <hr>
 </section>
-<section id="exercises-and-in-class-tasks" class="level2" data-number="2.11">
-<h2 data-number="2.11" class="anchored" data-anchor-id="exercises-and-in-class-tasks"><span class="header-section-number">2.11</span> 10. Exercises and in-class tasks</h2>
+<section id="exercises-and-in-class-tasks" class="level2" data-number="3.11">
+<h2 data-number="3.11" class="anchored" data-anchor-id="exercises-and-in-class-tasks"><span class="header-section-number">3.11</span> 10. Exercises and in-class tasks</h2>
 <p><strong>Exercise A:</strong> Build and prune a decision tree on the <code>wine</code> or <code>iris</code> dataset; show how pruning affects depth and accuracy.</p>
 <p><strong>Exercise B:</strong> Compute PDPs for two top features in a caret-tuned model and interpret whether they are monotonic or have thresholds.</p>
 <p><strong>Exercise C (advanced):</strong> Use <code>iml</code> to compute Shapley values for a small set of observations and compare with PDP insights.</p>
@@ -998,8 +1004,8 @@ $tree_accuracy
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./module1.html" class="pagination-link" aria-label="Module 1 — Data Preparation &amp; Standardization">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Module 1 — Data Preparation &amp; Standardization</span></span>
+      <a href="./module3.html" class="pagination-link" aria-label="Module 2 — Data Visualization">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Module 2 — Data Visualization</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

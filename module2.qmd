@@ -1,4 +1,4 @@
-# Module 2 — Decision Tree Analysis & Partial Dependence
+# Module 3 — Decision Tree Analysis & Partial Dependence
 
 ## Learning Outcomes
 

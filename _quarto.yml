@@ -9,6 +9,7 @@ book:
     - index.qmd
     #- intro.qmd
     - module1.qmd
+    - module3.qmd
     - module2.qmd
     #- summary.qmd
     #- references.qmd

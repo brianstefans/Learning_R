@@ -130,123 +130,223 @@
     ]
   },
   {
+    "objectID": "module3.html",
+    "href": "module3.html",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "",
+    "text": "2.1 Learning Outcomes\nBy the end of this module, learners will be able to:",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#learning-outcomes",
+    "href": "module3.html#learning-outcomes",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "",
+    "text": "Choose the right plot for the right question.\nCreate common plots using base R and ggplot2.\nUnderstand the statistical meaning behind plots (distribution, comparison, relationship).\nBuild publication-quality and complex visualizations using ggplot2.\nVisualize outputs from PCA, clustering, and machine learning models.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#why-visualization-matters-intuition-first",
+    "href": "module3.html#why-visualization-matters-intuition-first",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "2.2 1. Why visualization matters (intuition first)",
+    "text": "2.2 1. Why visualization matters (intuition first)\nVisualization helps answer three fundamental questions:\n\nWhat does my data look like? (distribution)\nHow do groups compare? (comparison)\nHow are variables related? (relationships)\n\nA good visualization: - Matches the data type (categorical vs numeric) - Matches the question being asked - Avoids distortion and unnecessary decoration",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#base-r-plotting-foundations",
+    "href": "module3.html#base-r-plotting-foundations",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "2.3 2. Base R plotting — foundations",
+    "text": "2.3 2. Base R plotting — foundations\nBase R plotting is: - Immediate - Explicit - Very useful for quick diagnostics\n\n2.3.1 2.1 Histogram — distributions (numeric)\nWhen to use: - To understand the distribution of a single numeric variable - To check skewness, modality, outliers\n\nhist(iris$Sepal.Length,\n     main = \"Histogram of Sepal Length\",\n     xlab = \"Sepal Length\",\n     col = \"lightblue\",\n     border = \"white\")\n\n\n\n\n\n\n\n\nStatistical meaning: area represents frequency; shape approximates the probability distribution.\n\n\n\n2.3.2 2.2 Bar plot — counts or summaries (categorical)\nWhen to use: - Comparing counts across categories\n\ncounts &lt;- table(iris$Species)\nbarplot(counts,\n        main = \"Count of Species\",\n        col = \"tan\")\n\n\n\n\n\n\n\n\nDo not use bar plots for raw numeric distributions (use histograms instead).\n\n\n\n2.3.3 2.3 Boxplot — distribution comparison\nWhen to use: - Comparing distributions across groups - Identifying outliers\n\nboxplot(Sepal.Length ~ Species,\n        data = iris,\n        main = \"Sepal Length by Species\",\n        col = \"lightgray\")\n\n\n\n\n\n\n\n\nStatistical interpretation: - Median, IQR, and outliers (1.5×IQR rule)\n\n\n\n2.3.4 2.4 Scatter plot — relationships\nWhen to use: - Relationship between two numeric variables\n\nplot(iris$Petal.Length, iris$Petal.Width,\n     main = \"Petal Length vs Width\",\n     xlab = \"Petal Length\",\n     ylab = \"Petal Width\")\n\n\n\n\n\n\n\n\n\n\n\n2.3.5 2.5 Pie charts — proportions (use sparingly)\nWhen to use: - Simple proportion comparisons (few categories)\n\npie(counts, main = \"Species Proportion\")\n\n\n\n\n\n\n\n\n⚠️ Teaching warning: Pie charts make precise comparisons difficult. Prefer bar charts.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#introduction-to-ggplot2-grammar-of-graphics",
+    "href": "module3.html#introduction-to-ggplot2-grammar-of-graphics",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "2.4 3. Introduction to ggplot2 — Grammar of Graphics",
+    "text": "2.4 3. Introduction to ggplot2 — Grammar of Graphics\nCore idea: build plots by mapping data → aesthetics → geometric objects.\n\nlibrary(ggplot2)\n\nWarning: package 'ggplot2' was built under R version 4.3.3\n\n\nStructure:\nggplot(data, aes(x, y)) +\n  geom_*() +\n  theme_*()",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#common-plots-in-ggplot2-side-by-side-with-base-r",
+    "href": "module3.html#common-plots-in-ggplot2-side-by-side-with-base-r",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "2.5 4. Common plots in ggplot2 (side-by-side with base R)",
+    "text": "2.5 4. Common plots in ggplot2 (side-by-side with base R)\n\n2.5.1 4.1 Histogram\n\nggplot(iris, aes(Sepal.Length)) +\n  geom_histogram(bins = 20, fill = \"steelblue\", color = \"white\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n2.5.2 4.2 Bar plot\n\nggplot(iris, aes(Species)) +\n  geom_bar(fill = \"tan\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n2.5.3 4.3 Boxplot\n\nggplot(iris, aes(Species, Sepal.Length)) +\n  geom_boxplot(fill = \"lightgray\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n2.5.4 4.4 Scatter plot with grouping\n\nggplot(iris, aes(Petal.Length, Petal.Width, color = Species)) +\n  geom_point(size = 3) +\n  theme_minimal()",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#statistical-layers-for-advanced-learners",
+    "href": "module3.html#statistical-layers-for-advanced-learners",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "2.6 5. Statistical layers (for advanced learners)",
+    "text": "2.6 5. Statistical layers (for advanced learners)\n\n2.6.1 5.1 Trend lines\n\nggplot(iris, aes(Petal.Length, Petal.Width)) +\n  geom_point() +\n  geom_smooth(method = \"lm\", se = TRUE) +\n  theme_minimal()\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\n\n\n\n2.6.2 5.2 Density plots\n\nggplot(iris, aes(Sepal.Length, fill = Species)) +\n  geom_density(alpha = 0.5) +\n  theme_minimal()",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#complex-visualizations-with-ggplot2",
+    "href": "module3.html#complex-visualizations-with-ggplot2",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "2.7 6. Complex visualizations with ggplot2",
+    "text": "2.7 6. Complex visualizations with ggplot2\n\n2.7.1 6.1 Faceting (small multiples)\n\nggplot(iris, aes(Sepal.Length)) +\n  geom_histogram(bins = 20, fill = \"steelblue\") +\n  facet_wrap(~Species) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n2.7.2 6.2 PCA visualization\n\npca &lt;- prcomp(iris[,1:4], scale. = TRUE)\npca_df &lt;- data.frame(PC1 = pca$x[,1], PC2 = pca$x[,2], Species = iris$Species)\n\nggplot(pca_df, aes(PC1, PC2, color = Species)) +\n  geom_point(size = 3) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n2.7.3 6.3 Cluster visualization\n\nset.seed(123)\nscaled_data &lt;- scale(iris[,1:4])\nkm &lt;- kmeans(scaled_data, centers = 3)\npca &lt;- prcomp(scaled_data)\ncluster_df &lt;- data.frame(PC1 = pca$x[,1], PC2 = pca$x[,2], cluster = factor(km$cluster))\n\nggplot(cluster_df, aes(PC1, PC2, color = cluster)) +\n  geom_point(size = 3) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n2.7.4 6.4 Model interpretation plots (PDP recap)\n\nlibrary(randomForest)\n\nWarning: package 'randomForest' was built under R version 4.3.3\n\n\nrandomForest 4.7-1.1\n\n\nType rfNews() to see new features/changes/bug fixes.\n\n\n\nAttaching package: 'randomForest'\n\n\nThe following object is masked from 'package:ggplot2':\n\n    margin\n\nlibrary(pdp)\n\nWarning: package 'pdp' was built under R version 4.3.3\n\nrf &lt;- randomForest(Species ~ ., data = iris)\npartial(rf, pred.var = \"Petal.Length\", prob = TRUE, which.class = \"setosa\", plot = TRUE)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#choosing-the-right-plot-summary-table",
+    "href": "module3.html#choosing-the-right-plot-summary-table",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "2.8 7. Choosing the right plot — summary table",
+    "text": "2.8 7. Choosing the right plot — summary table\n\n\n\nQuestion\nVariable types\nRecommended plot\n\n\n\n\nDistribution\nNumeric\nHistogram, Density\n\n\nCompare groups\nNumeric + Categorical\nBoxplot, Violin\n\n\nCounts\nCategorical\nBar plot\n\n\nProportions\nCategorical\nBar (preferred), Pie\n\n\nRelationship\nNumeric + Numeric\nScatter plot\n\n\nHigh-dimensional\nNumeric (many)\nPCA scatter",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "module3.html#exercises-self-checks",
+    "href": "module3.html#exercises-self-checks",
+    "title": "2  Module 2 — Data Visualization",
+    "section": "2.9 8. Exercises & self-checks",
+    "text": "2.9 8. Exercises & self-checks\n\n# Sanity checks\nstopifnot(is.numeric(iris$Sepal.Length))\nstopifnot(length(unique(iris$Species)) == 3)\n\n# Student task ideas:\n# 1. Create one plot per question type using iris\n# 2. Convert a base plot to ggplot2\n# 3. Justify plot choice in one sentence\n\n# - Start with **base R** to build intuition\n# - Move to **ggplot2** for flexibility and publication quality\n# - Always ask: *What question does this plot answer?*\n# - Emphasize interpretation over aesthetics",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Data Visualization</span>"
+    ]
+  },
+  {
     "objectID": "module2.html",
     "href": "module2.html",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
     "section": "",
-    "text": "2.1 Learning Outcomes\nBy the end of this module learners will be able to:",
+    "text": "3.1 Learning Outcomes\nBy the end of this module learners will be able to:",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#learning-outcomes",
     "href": "module2.html#learning-outcomes",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
     "section": "",
     "text": "Explain how decision trees split data (Gini, entropy) and the difference between classification and regression trees.\nFit, visualize, prune, and evaluate decision tree models in R (rpart, rpart.plot).\nUse cross-validation and caret for tuning and model selection.\nInterpret model predictions using feature importance and Partial Dependence Plots (PDPs) with pdp, iml, and DALEX.\nWrite tests that validate model behavior on simple datasets.",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#setup-packages",
     "href": "module2.html#setup-packages",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.2 1. Setup & packages",
-    "text": "2.2 1. Setup & packages",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.2 1. Setup & packages",
+    "text": "3.2 1. Setup & packages",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#decision-tree-basics-intuition",
     "href": "module2.html#decision-tree-basics-intuition",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.3 2. Decision tree basics (intuition)",
-    "text": "2.3 2. Decision tree basics (intuition)\nShort summary: trees recursively split the feature space to create homogeneous groups. Splits are chosen to maximize reduction in impurity (Gini or entropy for classification; MSE for regression).",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.3 2. Decision tree basics (intuition)",
+    "text": "3.3 2. Decision tree basics (intuition)\nShort summary: trees recursively split the feature space to create homogeneous groups. Splits are chosen to maximize reduction in impurity (Gini or entropy for classification; MSE for regression).",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#building-a-classification-tree-code-along",
     "href": "module2.html#building-a-classification-tree-code-along",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.4 3. Building a classification tree (code-along)",
-    "text": "2.4 3. Building a classification tree (code-along)\n\n# Use the iris dataset and create a reproducible train/test split\ndata(iris)\ntrain_idx &lt;- createDataPartition(iris$Species, p = 0.75, list = FALSE)\ntrain &lt;- iris[train_idx, ]\ntest  &lt;- iris[-train_idx, ]\n\n# Fit a simple rpart tree\nfit_rpart &lt;- rpart(Species ~ ., data = train, method = \"class\", control = rpart.control(cp = 0.01))\n\n# Visualize the tree\nrpart.plot(fit_rpart, type = 3, extra = 104, fallen.leaves = TRUE)\n\n\n\n\n\n\n\n# Predict and evaluate\npred_class &lt;- predict(fit_rpart, test, type = \"class\")\ncm &lt;- confusionMatrix(pred_class, test$Species)\ncm\n\nConfusion Matrix and Statistics\n\n            Reference\nPrediction   setosa versicolor virginica\n  setosa         12          0         0\n  versicolor      0         11         4\n  virginica       0          1         8\n\nOverall Statistics\n                                         \n               Accuracy : 0.8611         \n                 95% CI : (0.705, 0.9533)\n    No Information Rate : 0.3333         \n    P-Value [Acc &gt; NIR] : 8.705e-11      \n                                         \n                  Kappa : 0.7917         \n                                         \n Mcnemar's Test P-Value : NA             \n\nStatistics by Class:\n\n                     Class: setosa Class: versicolor Class: virginica\nSensitivity                 1.0000            0.9167           0.6667\nSpecificity                 1.0000            0.8333           0.9583\nPos Pred Value              1.0000            0.7333           0.8889\nNeg Pred Value              1.0000            0.9524           0.8519\nPrevalence                  0.3333            0.3333           0.3333\nDetection Rate              0.3333            0.3056           0.2222\nDetection Prevalence        0.3333            0.4167           0.2500\nBalanced Accuracy           1.0000            0.8750           0.8125\n\n\nTeaching notes: explain cp (complexity parameter), minsplit, maxdepth, and how pruning works. Use printcp(fit_rpart) and plotcp(fit_rpart) to choose cp.\n\nprintcp(fit_rpart)\n\n\nClassification tree:\nrpart(formula = Species ~ ., data = train, method = \"class\", \n    control = rpart.control(cp = 0.01))\n\nVariables actually used in tree construction:\n[1] Petal.Length\n\nRoot node error: 76/114 = 0.66667\n\nn= 114 \n\n       CP nsplit rel error   xerror     xstd\n1 0.50000      0  1.000000 1.223684 0.054461\n2 0.46053      1  0.500000 0.723684 0.070201\n3 0.01000      2  0.039474 0.065789 0.028769\n\nplotcp(fit_rpart)\n\n\n\n\n\n\n\n# prune to the cp with lowest xerror or the 1-SE rule\nopt_cp &lt;- fit_rpart$cptable[which.min(fit_rpart$cptable[,\"xerror\"]), \"CP\"]\nfit_pruned &lt;- prune(fit_rpart, cp = opt_cp)\nrpart.plot(fit_pruned, type = 3, extra = 104)",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.4 3. Building a classification tree (code-along)",
+    "text": "3.4 3. Building a classification tree (code-along)\n\n# Use the iris dataset and create a reproducible train/test split\ndata(iris)\ntrain_idx &lt;- createDataPartition(iris$Species, p = 0.75, list = FALSE)\ntrain &lt;- iris[train_idx, ]\ntest  &lt;- iris[-train_idx, ]\n\n# Fit a simple rpart tree\nfit_rpart &lt;- rpart(Species ~ ., data = train, method = \"class\", control = rpart.control(cp = 0.01))\n\n# Visualize the tree\nrpart.plot(fit_rpart, type = 3, extra = 104, fallen.leaves = TRUE)\n\n\n\n\n\n\n\n# Predict and evaluate\npred_class &lt;- predict(fit_rpart, test, type = \"class\")\ncm &lt;- confusionMatrix(pred_class, test$Species)\ncm\n\nConfusion Matrix and Statistics\n\n            Reference\nPrediction   setosa versicolor virginica\n  setosa         12          0         0\n  versicolor      0         11         4\n  virginica       0          1         8\n\nOverall Statistics\n                                         \n               Accuracy : 0.8611         \n                 95% CI : (0.705, 0.9533)\n    No Information Rate : 0.3333         \n    P-Value [Acc &gt; NIR] : 8.705e-11      \n                                         \n                  Kappa : 0.7917         \n                                         \n Mcnemar's Test P-Value : NA             \n\nStatistics by Class:\n\n                     Class: setosa Class: versicolor Class: virginica\nSensitivity                 1.0000            0.9167           0.6667\nSpecificity                 1.0000            0.8333           0.9583\nPos Pred Value              1.0000            0.7333           0.8889\nNeg Pred Value              1.0000            0.9524           0.8519\nPrevalence                  0.3333            0.3333           0.3333\nDetection Rate              0.3333            0.3056           0.2222\nDetection Prevalence        0.3333            0.4167           0.2500\nBalanced Accuracy           1.0000            0.8750           0.8125\n\n\nTeaching notes: explain cp (complexity parameter), minsplit, maxdepth, and how pruning works. Use printcp(fit_rpart) and plotcp(fit_rpart) to choose cp.\n\nprintcp(fit_rpart)\n\n\nClassification tree:\nrpart(formula = Species ~ ., data = train, method = \"class\", \n    control = rpart.control(cp = 0.01))\n\nVariables actually used in tree construction:\n[1] Petal.Length\n\nRoot node error: 76/114 = 0.66667\n\nn= 114 \n\n       CP nsplit rel error   xerror     xstd\n1 0.50000      0  1.000000 1.223684 0.054461\n2 0.46053      1  0.500000 0.723684 0.070201\n3 0.01000      2  0.039474 0.065789 0.028769\n\nplotcp(fit_rpart)\n\n\n\n\n\n\n\n# prune to the cp with lowest xerror or the 1-SE rule\nopt_cp &lt;- fit_rpart$cptable[which.min(fit_rpart$cptable[,\"xerror\"]), \"CP\"]\nfit_pruned &lt;- prune(fit_rpart, cp = opt_cp)\nrpart.plot(fit_pruned, type = 3, extra = 104)",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#cross-validation-and-tuning-with-caret",
     "href": "module2.html#cross-validation-and-tuning-with-caret",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.5 4. Cross-validation and tuning with caret",
-    "text": "2.5 4. Cross-validation and tuning with caret\n\nctrl &lt;- trainControl(method = \"cv\", number = 5, classProbs = TRUE, summaryFunction = multiClassSummary)\nset.seed(42)\ntune_grid &lt;- expand.grid(cp = seq(0.001, 0.05, by = 0.005))\ncaret_rpart &lt;- train(Species ~ ., data = train, method = \"rpart\", trControl = ctrl, tuneGrid = tune_grid)\ncaret_rpart\n\nCART \n\n114 samples\n  4 predictor\n  3 classes: 'setosa', 'versicolor', 'virginica' \n\nNo pre-processing\nResampling: Cross-Validated (5 fold) \nSummary of sample sizes: 92, 93, 90, 91, 90 \nResampling results across tuning parameters:\n\n  cp     logLoss   AUC        prAUC       Accuracy   Kappa      Mean_F1  \n  0.001  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.006  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.011  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.016  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.021  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.026  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.031  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.036  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.041  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.046  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  Mean_Sensitivity  Mean_Specificity  Mean_Pos_Pred_Value  Mean_Neg_Pred_Value\n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  Mean_Precision  Mean_Recall  Mean_Detection_Rate  Mean_Balanced_Accuracy\n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n\nAccuracy was used to select the optimal model using the largest value.\nThe final value used for the model was cp = 0.046.\n\nplot(caret_rpart)\n\n\n\n\n\n\n\n# evaluate on test\npred_caret &lt;- predict(caret_rpart, test)\nconfusionMatrix(pred_caret, test$Species)\n\nConfusion Matrix and Statistics\n\n            Reference\nPrediction   setosa versicolor virginica\n  setosa         12          0         0\n  versicolor      0         11         4\n  virginica       0          1         8\n\nOverall Statistics\n                                         \n               Accuracy : 0.8611         \n                 95% CI : (0.705, 0.9533)\n    No Information Rate : 0.3333         \n    P-Value [Acc &gt; NIR] : 8.705e-11      \n                                         \n                  Kappa : 0.7917         \n                                         \n Mcnemar's Test P-Value : NA             \n\nStatistics by Class:\n\n                     Class: setosa Class: versicolor Class: virginica\nSensitivity                 1.0000            0.9167           0.6667\nSpecificity                 1.0000            0.8333           0.9583\nPos Pred Value              1.0000            0.7333           0.8889\nNeg Pred Value              1.0000            0.9524           0.8519\nPrevalence                  0.3333            0.3333           0.3333\nDetection Rate              0.3333            0.3056           0.2222\nDetection Prevalence        0.3333            0.4167           0.2500\nBalanced Accuracy           1.0000            0.8750           0.8125\n\n\nNotes: caret::train automates CV and tuning. Explain multiClassSummary (accuracy, Kappa, etc.).",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.5 4. Cross-validation and tuning with caret",
+    "text": "3.5 4. Cross-validation and tuning with caret\n\nctrl &lt;- trainControl(method = \"cv\", number = 5, classProbs = TRUE, summaryFunction = multiClassSummary)\nset.seed(42)\ntune_grid &lt;- expand.grid(cp = seq(0.001, 0.05, by = 0.005))\ncaret_rpart &lt;- train(Species ~ ., data = train, method = \"rpart\", trControl = ctrl, tuneGrid = tune_grid)\ncaret_rpart\n\nCART \n\n114 samples\n  4 predictor\n  3 classes: 'setosa', 'versicolor', 'virginica' \n\nNo pre-processing\nResampling: Cross-Validated (5 fold) \nSummary of sample sizes: 92, 93, 90, 91, 90 \nResampling results across tuning parameters:\n\n  cp     logLoss   AUC        prAUC       Accuracy   Kappa      Mean_F1  \n  0.001  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.006  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.011  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.016  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.021  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.026  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.031  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.036  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.041  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  0.046  1.031016  0.9625794  0.04513889  0.9378411  0.9066523  0.9351836\n  Mean_Sensitivity  Mean_Specificity  Mean_Pos_Pred_Value  Mean_Neg_Pred_Value\n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  0.9369048         0.969127          0.9509259            0.9728704          \n  Mean_Precision  Mean_Recall  Mean_Detection_Rate  Mean_Balanced_Accuracy\n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n  0.9509259       0.9369048    0.3126137            0.9530159             \n\nAccuracy was used to select the optimal model using the largest value.\nThe final value used for the model was cp = 0.046.\n\nplot(caret_rpart)\n\n\n\n\n\n\n\n# evaluate on test\npred_caret &lt;- predict(caret_rpart, test)\nconfusionMatrix(pred_caret, test$Species)\n\nConfusion Matrix and Statistics\n\n            Reference\nPrediction   setosa versicolor virginica\n  setosa         12          0         0\n  versicolor      0         11         4\n  virginica       0          1         8\n\nOverall Statistics\n                                         \n               Accuracy : 0.8611         \n                 95% CI : (0.705, 0.9533)\n    No Information Rate : 0.3333         \n    P-Value [Acc &gt; NIR] : 8.705e-11      \n                                         \n                  Kappa : 0.7917         \n                                         \n Mcnemar's Test P-Value : NA             \n\nStatistics by Class:\n\n                     Class: setosa Class: versicolor Class: virginica\nSensitivity                 1.0000            0.9167           0.6667\nSpecificity                 1.0000            0.8333           0.9583\nPos Pred Value              1.0000            0.7333           0.8889\nNeg Pred Value              1.0000            0.9524           0.8519\nPrevalence                  0.3333            0.3333           0.3333\nDetection Rate              0.3333            0.3056           0.2222\nDetection Prevalence        0.3333            0.4167           0.2500\nBalanced Accuracy           1.0000            0.8750           0.8125\n\n\nNotes: caret::train automates CV and tuning. Explain multiClassSummary (accuracy, Kappa, etc.).",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#feature-importance-interpretation",
     "href": "module2.html#feature-importance-interpretation",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.6 5. Feature importance & interpretation",
-    "text": "2.6 5. Feature importance & interpretation\n\n# Variable importance from rpart:\nvarImp(fit_rpart)\n\n              Overall\nPetal.Length 70.25918\nPetal.Width  70.25918\nSepal.Length 35.26587\nSepal.Width  20.46939\n\n# For caret model:\nvarImp(caret_rpart)\n\nrpart variable importance\n\n             Overall\nPetal.Width   100.00\nPetal.Length  100.00\nSepal.Length   29.72\nSepal.Width     0.00\n\n\nDiscuss how importance is computed (split improvement) and limitations.",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.6 5. Feature importance & interpretation",
+    "text": "3.6 5. Feature importance & interpretation\n\n# Variable importance from rpart:\nvarImp(fit_rpart)\n\n              Overall\nPetal.Length 70.25918\nPetal.Width  70.25918\nSepal.Length 35.26587\nSepal.Width  20.46939\n\n# For caret model:\nvarImp(caret_rpart)\n\nrpart variable importance\n\n             Overall\nPetal.Width   100.00\nPetal.Length  100.00\nSepal.Length   29.72\nSepal.Width     0.00\n\n\nDiscuss how importance is computed (split improvement) and limitations.",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#partial-dependence-plots-pdps",
     "href": "module2.html#partial-dependence-plots-pdps",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.7 6. Partial Dependence Plots (PDPs)",
-    "text": "2.7 6. Partial Dependence Plots (PDPs)\nGoal: show marginal effect of a feature on predicted probability (or prediction) while averaging out other features.\n\n2.7.1 6.1 PDP with pdp\n\n# Use the caret-trained model (wrap predict function if necessary)\n# pdp works with models that have a predict method returning probabilities. We'll use the randomForest wrapper as an example.\nrf &lt;- randomForest(Species ~ ., data = train)\n\n# Partial dependence for Petal.Length vs class setosa (probability)\npdp_pl &lt;- partial(rf, pred.var = \"Petal.Length\", plot = TRUE, prob = TRUE, which.class = \"setosa\")\nprint(pdp_pl)\n\n\n\n\n\n\n\n\n\n\n2.7.2 6.2 PDP with DALEX\n\n# Create an explainer\nexplainer_rf &lt;- explain(rf, data = train[,1:4], y = train$Species, label = \"rf_iris\")\n\nPreparation of a new explainer is initiated\n  -&gt; model label       :  rf_iris \n  -&gt; data              :  114  rows  4  cols \n  -&gt; target variable   :  114  values \n  -&gt; predict function  :  yhat.randomForest  will be used (  default  )\n  -&gt; predicted values  :  No value for predict function target column. (  default  )\n  -&gt; model_info        :  package randomForest , ver. 4.7.1.1 , task multiclass (  default  ) \n  -&gt; predicted values  :  predict function returns multiple columns:  3  (  default  ) \n  -&gt; residual function :  difference between 1 and probability of true class (  default  )\n  -&gt; residuals         :  numerical, min =  0 , mean =  0.01891228 , max =  0.34  \n  A new explainer has been created!  \n\n# Profile (partial dependence) using DALEX\np &lt;- model_profile(explainer_rf, variables = \"Petal.Length\", N = 50)\nplot(p)\n\n\n\n\n\n\n\n\nTeaching caveats: PDPs show average marginal effects and can be misleading with strong feature interactions. Use two-way PDPs or ICE plots for heterogeneity.",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.7 6. Partial Dependence Plots (PDPs)",
+    "text": "3.7 6. Partial Dependence Plots (PDPs)\nGoal: show marginal effect of a feature on predicted probability (or prediction) while averaging out other features.\n\n3.7.1 6.1 PDP with pdp\n\n# Use the caret-trained model (wrap predict function if necessary)\n# pdp works with models that have a predict method returning probabilities. We'll use the randomForest wrapper as an example.\nrf &lt;- randomForest(Species ~ ., data = train)\n\n# Partial dependence for Petal.Length vs class setosa (probability)\npdp_pl &lt;- partial(rf, pred.var = \"Petal.Length\", plot = TRUE, prob = TRUE, which.class = \"setosa\")\nprint(pdp_pl)\n\n\n\n\n\n\n\n\n\n\n3.7.2 6.2 PDP with DALEX\n\n# Create an explainer\nexplainer_rf &lt;- explain(rf, data = train[,1:4], y = train$Species, label = \"rf_iris\")\n\nPreparation of a new explainer is initiated\n  -&gt; model label       :  rf_iris \n  -&gt; data              :  114  rows  4  cols \n  -&gt; target variable   :  114  values \n  -&gt; predict function  :  yhat.randomForest  will be used (  default  )\n  -&gt; predicted values  :  No value for predict function target column. (  default  )\n  -&gt; model_info        :  package randomForest , ver. 4.7.1.1 , task multiclass (  default  ) \n  -&gt; predicted values  :  predict function returns multiple columns:  3  (  default  ) \n  -&gt; residual function :  difference between 1 and probability of true class (  default  )\n  -&gt; residuals         :  numerical, min =  0 , mean =  0.01891228 , max =  0.34  \n  A new explainer has been created!  \n\n# Profile (partial dependence) using DALEX\np &lt;- model_profile(explainer_rf, variables = \"Petal.Length\", N = 50)\nplot(p)\n\n\n\n\n\n\n\n\nTeaching caveats: PDPs show average marginal effects and can be misleading with strong feature interactions. Use two-way PDPs or ICE plots for heterogeneity.",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#individual-conditional-expectation-ice-and-2d-pdps",
     "href": "module2.html#individual-conditional-expectation-ice-and-2d-pdps",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.8 7. Individual Conditional Expectation (ICE) and 2D PDPs",
-    "text": "2.8 7. Individual Conditional Expectation (ICE) and 2D PDPs\n\n# ICE using pdp\nice_pl &lt;- partial(rf, pred.var = \"Petal.Length\", ice = TRUE, plot = TRUE, which.class = \"setosa\")\n\n# 2D PDP for Petal.Length and Petal.Width\npdp_2d &lt;- partial(rf, pred.var = c(\"Petal.Length\", \"Petal.Width\"), chull = TRUE)\nplotPartial(pdp_2d)",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.8 7. Individual Conditional Expectation (ICE) and 2D PDPs",
+    "text": "3.8 7. Individual Conditional Expectation (ICE) and 2D PDPs\n\n# ICE using pdp\nice_pl &lt;- partial(rf, pred.var = \"Petal.Length\", ice = TRUE, plot = TRUE, which.class = \"setosa\")\n\n# 2D PDP for Petal.Length and Petal.Width\npdp_2d &lt;- partial(rf, pred.var = c(\"Petal.Length\", \"Petal.Width\"), chull = TRUE)\nplotPartial(pdp_2d)",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#model-comparison-decision-tree-vs-random-forest",
     "href": "module2.html#model-comparison-decision-tree-vs-random-forest",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.9 8. Model comparison: Decision Tree vs Random Forest",
-    "text": "2.9 8. Model comparison: Decision Tree vs Random Forest\n\n# Fit Random Forest and compare\nrf_fit &lt;- randomForest(Species ~ ., data = train)\npred_rf &lt;- predict(rf_fit, test)\ncm_rf &lt;- confusionMatrix(pred_rf, test$Species)\ncm_tab &lt;- rbind(tree = cm$overall[names(cm$overall) == \"Accuracy\"], rf = cm_rf$overall[names(cm_rf$overall) == \"Accuracy\"])\ncm_tab\n\n      Accuracy\ntree 0.8611111\nrf   0.9444444\n\n\nDiscuss trade-offs: interpretability (tree) vs performance (RF), stability, and overfitting.",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.9 8. Model comparison: Decision Tree vs Random Forest",
+    "text": "3.9 8. Model comparison: Decision Tree vs Random Forest\n\n# Fit Random Forest and compare\nrf_fit &lt;- randomForest(Species ~ ., data = train)\npred_rf &lt;- predict(rf_fit, test)\ncm_rf &lt;- confusionMatrix(pred_rf, test$Species)\ncm_tab &lt;- rbind(tree = cm$overall[names(cm$overall) == \"Accuracy\"], rf = cm_rf$overall[names(cm_rf$overall) == \"Accuracy\"])\ncm_tab\n\n      Accuracy\ntree 0.8611111\nrf   0.9444444\n\n\nDiscuss trade-offs: interpretability (tree) vs performance (RF), stability, and overfitting.",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#automated-tests-for-classroom-sanity-checks",
     "href": "module2.html#automated-tests-for-classroom-sanity-checks",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.10 9. Automated tests for classroom (sanity checks)",
-    "text": "2.10 9. Automated tests for classroom (sanity checks)\n\n# 1) Ensure tree predictions have reasonable accuracy (&gt; 0.7 on iris test)\nacc_tree &lt;- cm$overall[\"Accuracy\"]\nstopifnot(acc_tree &gt;= 0.7)\n\n# 2) PDP returns a data.frame and includes Petal.Length values\npdp_res &lt;- partial(rf, pred.var = \"Petal.Length\", prob = TRUE, which.class = \"setosa\", plot = FALSE)\nstopifnot(is.data.frame(pdp_res))\nstopifnot(\"Petal.Length\" %in% names(pdp_res))\n\nlist(tests = \"all passed\", tree_accuracy = acc_tree)\n\n$tests\n[1] \"all passed\"\n\n$tree_accuracy\n Accuracy \n0.8611111",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.10 9. Automated tests for classroom (sanity checks)",
+    "text": "3.10 9. Automated tests for classroom (sanity checks)\n\n# 1) Ensure tree predictions have reasonable accuracy (&gt; 0.7 on iris test)\nacc_tree &lt;- cm$overall[\"Accuracy\"]\nstopifnot(acc_tree &gt;= 0.7)\n\n# 2) PDP returns a data.frame and includes Petal.Length values\npdp_res &lt;- partial(rf, pred.var = \"Petal.Length\", prob = TRUE, which.class = \"setosa\", plot = FALSE)\nstopifnot(is.data.frame(pdp_res))\nstopifnot(\"Petal.Length\" %in% names(pdp_res))\n\nlist(tests = \"all passed\", tree_accuracy = acc_tree)\n\n$tests\n[1] \"all passed\"\n\n$tree_accuracy\n Accuracy \n0.8611111",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   },
   {
     "objectID": "module2.html#exercises-and-in-class-tasks",
     "href": "module2.html#exercises-and-in-class-tasks",
-    "title": "2  Module 2 — Decision Tree Analysis & Partial Dependence",
-    "section": "2.11 10. Exercises and in-class tasks",
-    "text": "2.11 10. Exercises and in-class tasks\nExercise A: Build and prune a decision tree on the wine or iris dataset; show how pruning affects depth and accuracy.\nExercise B: Compute PDPs for two top features in a caret-tuned model and interpret whether they are monotonic or have thresholds.\nExercise C (advanced): Use iml to compute Shapley values for a small set of observations and compare with PDP insights.\n\n\n\n\n\n\n\n\nEnd of Module 2 — Decision Tree Analysis & Partial Dependence",
+    "title": "3  Module 3 — Decision Tree Analysis & Partial Dependence",
+    "section": "3.11 10. Exercises and in-class tasks",
+    "text": "3.11 10. Exercises and in-class tasks\nExercise A: Build and prune a decision tree on the wine or iris dataset; show how pruning affects depth and accuracy.\nExercise B: Compute PDPs for two top features in a caret-tuned model and interpret whether they are monotonic or have thresholds.\nExercise C (advanced): Use iml to compute Shapley values for a small set of observations and compare with PDP insights.\n\n\n\n\n\n\n\n\nEnd of Module 2 — Decision Tree Analysis & Partial Dependence",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Module 2 — Decision Tree Analysis & Partial Dependence</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Module 3 — Decision Tree Analysis & Partial Dependence</span>"
     ]
   }
 ]

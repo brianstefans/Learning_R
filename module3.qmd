@@ -1,4 +1,4 @@
-# Module 3 — Data Visualization 
+# Module 2 — Data Visualization 
 
 > **Pedagogical note:** This module is designed for **two audiences at once**:
 > - Learners **new to statistics** (focus on intuition, what to plot, and why)
@@ -284,6 +284,7 @@ stopifnot(length(unique(iris$Species)) == 3)
 # - Move to **ggplot2** for flexibility and publication quality
 # - Always ask: *What question does this plot answer?*
 # - Emphasize interpretation over aesthetics
+
 ```
 
 ---
