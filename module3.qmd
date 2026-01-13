@@ -215,46 +215,6 @@ ggplot(iris, aes(Sepal.Length)) +
 
 ---
 
-### 6.2 PCA visualization
-
-```{r}
-pca <- prcomp(iris[,1:4], scale. = TRUE)
-pca_df <- data.frame(PC1 = pca$x[,1], PC2 = pca$x[,2], Species = iris$Species)
-
-ggplot(pca_df, aes(PC1, PC2, color = Species)) +
-  geom_point(size = 3) +
-  theme_minimal()
-```
-
----
-
-### 6.3 Cluster visualization
-
-```{r}
-set.seed(123)
-scaled_data <- scale(iris[,1:4])
-km <- kmeans(scaled_data, centers = 3)
-pca <- prcomp(scaled_data)
-cluster_df <- data.frame(PC1 = pca$x[,1], PC2 = pca$x[,2], cluster = factor(km$cluster))
-
-ggplot(cluster_df, aes(PC1, PC2, color = cluster)) +
-  geom_point(size = 3) +
-  theme_minimal()
-```
-
----
-
-### 6.4 Model interpretation plots (PDP recap)
-
-```{r}
-library(randomForest)
-library(pdp)
-rf <- randomForest(Species ~ ., data = iris)
-partial(rf, pred.var = "Petal.Length", prob = TRUE, which.class = "setosa", plot = TRUE)
-```
-
----
-
 ## 7. Choosing the right plot — summary table
 
 | Question | Variable types | Recommended plot |
