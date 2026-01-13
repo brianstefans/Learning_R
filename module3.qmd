@@ -1,0 +1,297 @@
+# Module 3 — Data Visualization 
+
+> **Pedagogical note:** This module is designed for **two audiences at once**:
+> - Learners **new to statistics** (focus on intuition, what to plot, and why)
+> - Learners **with statistics background** (focus on correctness, assumptions, and best practice)
+
+---
+
+## Learning Outcomes
+
+By the end of this module, learners will be able to:
+
+- Choose the **right plot for the right question**.
+- Create common plots using **base R** and **ggplot2**.
+- Understand the statistical meaning behind plots (distribution, comparison, relationship).
+- Build **publication-quality** and **complex visualizations** using ggplot2.
+- Visualize outputs from PCA, clustering, and machine learning models.
+
+---
+
+## 1. Why visualization matters (intuition first)
+
+Visualization helps answer three fundamental questions:
+
+1. **What does my data look like?** (distribution)
+2. **How do groups compare?** (comparison)
+3. **How are variables related?** (relationships)
+
+A good visualization:
+- Matches the **data type** (categorical vs numeric)
+- Matches the **question** being asked
+- Avoids distortion and unnecessary decoration
+
+---
+
+## 2. Base R plotting — foundations
+
+Base R plotting is:
+- Immediate
+- Explicit
+- Very useful for quick diagnostics
+
+### 2.1 Histogram — distributions (numeric)
+
+**When to use:**
+- To understand the distribution of a single numeric variable
+- To check skewness, modality, outliers
+
+```{r}
+hist(iris$Sepal.Length,
+     main = "Histogram of Sepal Length",
+     xlab = "Sepal Length",
+     col = "lightblue",
+     border = "white")
+```
+
+**Statistical meaning:** area represents frequency; shape approximates the probability distribution.
+
+---
+
+### 2.2 Bar plot — counts or summaries (categorical)
+
+**When to use:**
+- Comparing counts across categories
+
+```{r}
+counts <- table(iris$Species)
+barplot(counts,
+        main = "Count of Species",
+        col = "tan")
+```
+
+**Do not** use bar plots for raw numeric distributions (use histograms instead).
+
+---
+
+### 2.3 Boxplot — distribution comparison
+
+**When to use:**
+- Comparing distributions across groups
+- Identifying outliers
+
+```{r}
+boxplot(Sepal.Length ~ Species,
+        data = iris,
+        main = "Sepal Length by Species",
+        col = "lightgray")
+```
+
+**Statistical interpretation:**
+- Median, IQR, and outliers (1.5×IQR rule)
+
+---
+
+### 2.4 Scatter plot — relationships
+
+**When to use:**
+- Relationship between two numeric variables
+
+```{r}
+plot(iris$Petal.Length, iris$Petal.Width,
+     main = "Petal Length vs Width",
+     xlab = "Petal Length",
+     ylab = "Petal Width")
+```
+
+---
+
+### 2.5 Pie charts — proportions (use sparingly)
+
+**When to use:**
+- Simple proportion comparisons (few categories)
+
+```{r}
+pie(counts, main = "Species Proportion")
+```
+
+⚠️ **Teaching warning:** Pie charts make precise comparisons difficult. Prefer bar charts.
+
+---
+
+## 3. Introduction to ggplot2 — Grammar of Graphics
+
+**Core idea:** build plots by mapping data → aesthetics → geometric objects.
+
+```{r}
+library(ggplot2)
+```
+
+Structure:
+
+```r
+ggplot(data, aes(x, y)) +
+  geom_*() +
+  theme_*()
+```
+
+---
+
+## 4. Common plots in ggplot2 (side-by-side with base R)
+
+### 4.1 Histogram
+
+```{r}
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram(bins = 20, fill = "steelblue", color = "white") +
+  theme_minimal()
+```
+
+---
+
+### 4.2 Bar plot
+
+```{r}
+ggplot(iris, aes(Species)) +
+  geom_bar(fill = "tan") +
+  theme_minimal()
+```
+
+---
+
+### 4.3 Boxplot
+
+```{r}
+ggplot(iris, aes(Species, Sepal.Length)) +
+  geom_boxplot(fill = "lightgray") +
+  theme_minimal()
+```
+
+---
+
+### 4.4 Scatter plot with grouping
+
+```{r}
+ggplot(iris, aes(Petal.Length, Petal.Width, color = Species)) +
+  geom_point(size = 3) +
+  theme_minimal()
+```
+
+---
+
+## 5. Statistical layers (for advanced learners)
+
+### 5.1 Trend lines
+
+```{r}
+ggplot(iris, aes(Petal.Length, Petal.Width)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  theme_minimal()
+```
+
+---
+
+### 5.2 Density plots
+
+```{r}
+ggplot(iris, aes(Sepal.Length, fill = Species)) +
+  geom_density(alpha = 0.5) +
+  theme_minimal()
+```
+
+---
+
+## 6. Complex visualizations with ggplot2
+
+### 6.1 Faceting (small multiples)
+
+```{r}
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram(bins = 20, fill = "steelblue") +
+  facet_wrap(~Species) +
+  theme_minimal()
+```
+
+---
+
+### 6.2 PCA visualization
+
+```{r}
+pca <- prcomp(iris[,1:4], scale. = TRUE)
+pca_df <- data.frame(PC1 = pca$x[,1], PC2 = pca$x[,2], Species = iris$Species)
+
+ggplot(pca_df, aes(PC1, PC2, color = Species)) +
+  geom_point(size = 3) +
+  theme_minimal()
+```
+
+---
+
+### 6.3 Cluster visualization
+
+```{r}
+set.seed(123)
+scaled_data <- scale(iris[,1:4])
+km <- kmeans(scaled_data, centers = 3)
+pca <- prcomp(scaled_data)
+cluster_df <- data.frame(PC1 = pca$x[,1], PC2 = pca$x[,2], cluster = factor(km$cluster))
+
+ggplot(cluster_df, aes(PC1, PC2, color = cluster)) +
+  geom_point(size = 3) +
+  theme_minimal()
+```
+
+---
+
+### 6.4 Model interpretation plots (PDP recap)
+
+```{r}
+library(randomForest)
+library(pdp)
+rf <- randomForest(Species ~ ., data = iris)
+partial(rf, pred.var = "Petal.Length", prob = TRUE, which.class = "setosa", plot = TRUE)
+```
+
+---
+
+## 7. Choosing the right plot — summary table
+
+| Question | Variable types | Recommended plot |
+|--------|----------------|------------------|
+| Distribution | Numeric | Histogram, Density |
+| Compare groups | Numeric + Categorical | Boxplot, Violin |
+| Counts | Categorical | Bar plot |
+| Proportions | Categorical | Bar (preferred), Pie |
+| Relationship | Numeric + Numeric | Scatter plot |
+| High-dimensional | Numeric (many) | PCA scatter |
+
+---
+
+## 8. Exercises & self-checks
+
+```{r}
+# Sanity checks
+stopifnot(is.numeric(iris$Sepal.Length))
+stopifnot(length(unique(iris$Species)) == 3)
+
+# Student task ideas:
+# 1. Create one plot per question type using iris
+# 2. Convert a base plot to ggplot2
+# 3. Justify plot choice in one sentence
+
+# - Start with **base R** to build intuition
+# - Move to **ggplot2** for flexibility and publication quality
+# - Always ask: *What question does this plot answer?*
+# - Emphasize interpretation over aesthetics
+```
+
+---
+
+
+
+
+
+
+
+
