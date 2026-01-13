@@ -203,9 +203,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#complex-visualizations-with-ggplot2" id="toc-complex-visualizations-with-ggplot2" class="nav-link" data-scroll-target="#complex-visualizations-with-ggplot2"><span class="header-section-number">2.7</span> 6. Complex visualizations with ggplot2</a>
   <ul class="collapse">
   <li><a href="#faceting-small-multiples" id="toc-faceting-small-multiples" class="nav-link" data-scroll-target="#faceting-small-multiples"><span class="header-section-number">2.7.1</span> 6.1 Faceting (small multiples)</a></li>
-  <li><a href="#pca-visualization" id="toc-pca-visualization" class="nav-link" data-scroll-target="#pca-visualization"><span class="header-section-number">2.7.2</span> 6.2 PCA visualization</a></li>
-  <li><a href="#cluster-visualization" id="toc-cluster-visualization" class="nav-link" data-scroll-target="#cluster-visualization"><span class="header-section-number">2.7.3</span> 6.3 Cluster visualization</a></li>
-  <li><a href="#model-interpretation-plots-pdp-recap" id="toc-model-interpretation-plots-pdp-recap" class="nav-link" data-scroll-target="#model-interpretation-plots-pdp-recap"><span class="header-section-number">2.7.4</span> 6.4 Model interpretation plots (PDP recap)</a></li>
   </ul></li>
   <li><a href="#choosing-the-right-plot-summary-table" id="toc-choosing-the-right-plot-summary-table" class="nav-link" data-scroll-target="#choosing-the-right-plot-summary-table"><span class="header-section-number">2.8</span> 7. Choosing the right plot — summary table</a></li>
   <li><a href="#exercises-self-checks" id="toc-exercises-self-checks" class="nav-link" data-scroll-target="#exercises-self-checks"><span class="header-section-number">2.9</span> 8. Exercises &amp; self-checks</a></li>
@@ -497,85 +494,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <hr>
 </section>
-<section id="pca-visualization" class="level3" data-number="2.7.2">
-<h3 data-number="2.7.2" class="anchored" data-anchor-id="pca-visualization"><span class="header-section-number">2.7.2</span> 6.2 PCA visualization</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pca <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(iris[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>pca_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">PC1 =</span> pca<span class="sc">$</span>x[,<span class="dv">1</span>], <span class="at">PC2 =</span> pca<span class="sc">$</span>x[,<span class="dv">2</span>], <span class="at">Species =</span> iris<span class="sc">$</span>Species)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pca_df, <span class="fu">aes</span>(PC1, PC2, <span class="at">color =</span> Species)) <span class="sc">+</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="module3_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<hr>
-</section>
-<section id="cluster-visualization" class="level3" data-number="2.7.3">
-<h3 data-number="2.7.3" class="anchored" data-anchor-id="cluster-visualization"><span class="header-section-number">2.7.3</span> 6.3 Cluster visualization</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>scaled_data <span class="ot">&lt;-</span> <span class="fu">scale</span>(iris[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>km <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(scaled_data, <span class="at">centers =</span> <span class="dv">3</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>pca <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(scaled_data)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>cluster_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">PC1 =</span> pca<span class="sc">$</span>x[,<span class="dv">1</span>], <span class="at">PC2 =</span> pca<span class="sc">$</span>x[,<span class="dv">2</span>], <span class="at">cluster =</span> <span class="fu">factor</span>(km<span class="sc">$</span>cluster))</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cluster_df, <span class="fu">aes</span>(PC1, PC2, <span class="at">color =</span> cluster)) <span class="sc">+</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="module3_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<hr>
-</section>
-<section id="model-interpretation-plots-pdp-recap" class="level3" data-number="2.7.4">
-<h3 data-number="2.7.4" class="anchored" data-anchor-id="model-interpretation-plots-pdp-recap"><span class="header-section-number">2.7.4</span> 6.4 Model interpretation plots (PDP recap)</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(randomForest)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'randomForest' was built under R version 4.3.3</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>randomForest 4.7-1.1</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Type rfNews() to see new features/changes/bug fixes.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'randomForest'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:ggplot2':
-
-    margin</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'pdp' was built under R version 4.3.3</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rf <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> iris)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">partial</span>(rf, <span class="at">pred.var =</span> <span class="st">"Petal.Length"</span>, <span class="at">prob =</span> <span class="cn">TRUE</span>, <span class="at">which.class =</span> <span class="st">"setosa"</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="module3_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<hr>
-</section>
 </section>
 <section id="choosing-the-right-plot-summary-table" class="level2" data-number="2.8">
 <h2 data-number="2.8" class="anchored" data-anchor-id="choosing-the-right-plot-summary-table"><span class="header-section-number">2.8</span> 7. Choosing the right plot — summary table</h2>
@@ -625,19 +543,19 @@ Attaching package: 'randomForest'</code></pre>
 <section id="exercises-self-checks" class="level2" data-number="2.9">
 <h2 data-number="2.9" class="anchored" data-anchor-id="exercises-self-checks"><span class="header-section-number">2.9</span> 8. Exercises &amp; self-checks</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity checks</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">is.numeric</span>(iris<span class="sc">$</span>Sepal.Length))</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">length</span>(<span class="fu">unique</span>(iris<span class="sc">$</span>Species)) <span class="sc">==</span> <span class="dv">3</span>)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Student task ideas:</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create one plot per question type using iris</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Convert a base plot to ggplot2</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Justify plot choice in one sentence</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># - Start with **base R** to build intuition</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># - Move to **ggplot2** for flexibility and publication quality</span></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co"># - Always ask: *What question does this plot answer?*</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># - Emphasize interpretation over aesthetics</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity checks</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">is.numeric</span>(iris<span class="sc">$</span>Sepal.Length))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">length</span>(<span class="fu">unique</span>(iris<span class="sc">$</span>Species)) <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Student task ideas:</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create one plot per question type using iris</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Convert a base plot to ggplot2</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Justify plot choice in one sentence</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># - Start with **base R** to build intuition</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># - Move to **ggplot2** for flexibility and publication quality</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># - Always ask: *What question does this plot answer?*</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># - Emphasize interpretation over aesthetics</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 
